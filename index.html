@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Kanban Board</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+</head>
+
+<body class="bg-gray-100 p-8">
+
+<div class="max-w-7xl mx-auto grid md:grid-cols-3 gap-6">
+
+<!-- ===================================================== -->
+<!-- TO DO -->
+<!-- ===================================================== -->
+
+<div class="bg-gray-50 p-4 rounded-xl">
+
+<h2 class="font-semibold text-gray-700 mb-4">To Do</h2>
+
+<div class="kanban-list space-y-4">
+
+<!-- CARD -->
+<div class="kanban-card bg-white p-4 rounded-lg shadow" data-card-id="1">
+
+<div class="flex justify-between">
+
+<h3 class="font-semibold text-gray-800">
+Change charts javascript
+</h3>
+
+<button class="editTask text-gray-400 hover:text-gray-700">✎</button>
+
+</div>
+
+<p class="text-sm text-gray-500 mt-1">
+Each instance of "color-level" needs to be changed to "shift-color".
+</p>
+
+<div class="flex justify-between items-center mt-4">
+
+<div class="flex -space-x-2">
+<img class="w-7 h-7 rounded-full border" src="https://i.pravatar.cc/30?img=1">
+<img class="w-7 h-7 rounded-full border" src="https://i.pravatar.cc/30?img=2">
+</div>
+
+<span class="bg-red-100 text-red-700 text-xs px-2 py-1 rounded">
+5 days left
+</span>
+
+</div>
+
+</div>
+
+
+<!-- CARD WITH CHECKLIST -->
+<div class="kanban-card bg-white p-4 rounded-lg shadow" data-card-id="2">
+
+<div class="flex justify-between">
+
+<h3 class="font-semibold text-gray-800">
+Redesign homepage
+</h3>
+
+<button class="editTask text-gray-400 hover:text-gray-700">✎</button>
+
+</div>
+
+<p class="text-sm text-gray-500 mt-1">
+Improve UX and engagement
+</p>
+
+
+<!-- CHECKLIST PROGRESS -->
+
+<div class="taskSection mt-4">
+
+<div class="flex justify-between text-xs text-gray-500 mb-1">
+
+<span>Tasks</span>
+<span class="taskProgressText"></span>
+
+</div>
+
+<div class="bg-gray-200 h-2 rounded">
+
+<div class="taskProgressBar bg-blue-500 h-2 rounded"></div>
+
+</div>
+
+
+<div class="taskList mt-3 space-y-1 text-sm"></div>
+
+</div>
+
+</div>
+
+</div>
+
+<button class="mt-4 w-full border-2 border-dashed rounded-lg py-2 text-gray-500 hover:bg-gray-200">
++ Add new task
+</button>
+
+</div>
+
+
+<!-- ===================================================== -->
+<!-- IN PROGRESS -->
+<!-- ===================================================== -->
+
+<div class="bg-gray-50 p-4 rounded-xl">
+
+<h2 class="font-semibold text-gray-700 mb-4">In Progress</h2>
+
+<div class="kanban-list space-y-4">
+
+<div class="kanban-card bg-white rounded-lg shadow overflow-hidden" data-card-id="3">
+
+<img class="w-full h-40 object-cover"
+src="https://images.unsplash.com/photo-1552664730-d307ca884978">
+
+<div class="p-4">
+
+<div class="flex justify-between">
+
+<h3 class="font-semibold text-gray-800">
+Redesign tables card
+</h3>
+
+<button class="editTask text-gray-400 hover:text-gray-700">✎</button>
+
+</div>
+
+<p class="text-sm text-gray-500 mt-1">
+Update dashboard components
+</p>
+
+<div class="flex justify-between mt-4">
+
+<div class="flex -space-x-2">
+<img class="w-7 h-7 rounded-full border" src="https://i.pravatar.cc/30?img=3">
+<img class="w-7 h-7 rounded-full border" src="https://i.pravatar.cc/30?img=4">
+</div>
+
+<span class="bg-red-100 text-red-700 text-xs px-2 py-1 rounded">
+9 days left
+</span>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<button class="mt-4 w-full border-2 border-dashed rounded-lg py-2 text-gray-500 hover:bg-gray-200">
++ Add new task
+</button>
+
+</div>
+
+
+<!-- ===================================================== -->
+<!-- DONE -->
+<!-- ===================================================== -->
+
+<div class="bg-gray-50 p-4 rounded-xl">
+
+<h2 class="font-semibold text-gray-700 mb-4">Done</h2>
+
+<div class="kanban-list space-y-4">
+
+<div class="kanban-card bg-white p-4 rounded-lg shadow" data-card-id="4">
+
+<div class="flex justify-between">
+
+<h3 class="font-semibold text-gray-800">
+Create Javascript elements
+</h3>
+
+<button class="editTask text-gray-400 hover:text-gray-700">✎</button>
+
+</div>
+
+<p class="text-sm text-gray-500 mt-1">
+UI components completed
+</p>
+
+<div class="flex justify-between mt-4">
+
+<div class="flex -space-x-2">
+<img class="w-7 h-7 rounded-full border" src="https://i.pravatar.cc/30?img=5">
+</div>
+
+<span class="bg-green-100 text-green-700 text-xs px-2 py-1 rounded">
+Done
+</span>
+
+</div>
+
+</div>
+
+</div>
+
+<button class="mt-4 w-full border-2 border-dashed rounded-lg py-2 text-gray-500 hover:bg-gray-200">
++ Add new task
+</button>
+
+</div>
+
+</div>
+
+<!-- =====================================================
+MODAL
+===================================================== -->
+
+<div id="taskModal"
+     class="hidden fixed inset-0 bg-black/40 flex items-center justify-center p-6 overflow-y-auto">
+
+    <div class="bg-white rounded-xl shadow-xl w-[1100px] max-w-full">
+
+        <!-- HEADER -->
+
+        <div class="flex justify-between items-center px-6 py-4 border-b">
+
+            <h2 class="text-xl font-semibold">
+                Edit task
+            </h2>
+
+            <button id="closeModal" class="text-gray-500 text-xl">
+                ×
+            </button>
+
+        </div>
+
+
+        <!-- CONTENT -->
+
+        <div class="p-6 grid grid-cols-2 gap-8">
+
+
+            <!-- LEFT SIDE -->
+
+            <div>
+
+                <label class="text-sm text-gray-600">
+                    Title
+                </label>
+
+                <input
+                        type="text"
+                        class="w-full border rounded-lg p-2 mt-1"
+                        value="Redesign Flowbite homepage">
+
+
+                <label class="text-sm text-gray-600 mt-4 block">
+                    Description
+                </label>
+
+                <textarea
+                        class="w-full border rounded-lg p-3 mt-1 h-56">
+Redesigning a homepage can be a powerful way to improve user experience.
+                </textarea>
+
+
+                <!-- ======================================
+                TASKS (ABOVE ACTIVITY)
+                ======================================= -->
+
+				<h3 class="mt-6 font-semibold text-gray-700">Tasks</h3>
+				
+				<div id="modalTaskList" class="space-y-2 mt-3"></div>
+				
+				<button
+				    id="addTaskBtn"
+				    class="mt-2 border rounded-lg px-3 py-1 text-sm hover:bg-gray-100">
+				    + Add task
+				</button>
+
+
+                <!-- ======================================
+                ACTIVITY
+                ======================================= -->
+
+                <h3 class="mt-6 font-semibold text-gray-700">
+                    Activity
+                </h3>
+
+
+                <div class="flex items-start gap-3 mt-3">
+
+                    <img
+                            class="w-8 h-8 rounded-full"
+                            src="https://i.pravatar.cc/40?img=7">
+
+                    <div class="flex-1">
+
+                        <textarea
+                                class="w-full border rounded-lg p-3 h-28"
+                                placeholder="Write a description here">
+                        </textarea>
+
+                        <button
+                                class="mt-3 bg-blue-600 text-white px-4 py-2 rounded">
+                            Post comment
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- RIGHT SIDE -->
+
+            <div>
+
+                <label class="text-sm text-gray-600">
+                    Assignee & Communication
+                </label>
+
+                <div class="flex items-center gap-3 mt-2">
+
+                    <div class="flex -space-x-2">
+
+                        <img class="w-8 h-8 rounded-full border"
+                             src="https://i.pravatar.cc/40?img=1">
+
+                        <img class="w-8 h-8 rounded-full border"
+                             src="https://i.pravatar.cc/40?img=2">
+
+                        <img class="w-8 h-8 rounded-full border"
+                             src="https://i.pravatar.cc/40?img=3">
+
+                        <div
+                                class="w-8 h-8 rounded-full bg-gray-700 text-white flex items-center justify-center text-sm">
+                            +9
+                        </div>
+
+                    </div>
+
+                    <button class="border rounded-lg px-3 py-1 text-sm">
+                        + Add member
+                    </button>
+
+                </div>
+
+
+                <button
+                        class="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg w-full">
+                    Add Google Meet video conference
+                </button>
+
+
+                <!-- PRIORITY -->
+
+                <label class="text-sm text-gray-600 mt-6 block">
+                    Priority
+                </label>
+
+                <div class="flex gap-6 mt-2 text-sm">
+
+                    <label><input type="checkbox"> High</label>
+                    <label><input type="checkbox"> Medium</label>
+                    <label><input type="checkbox" checked> Low</label>
+                    <label><input type="checkbox"> Lowest</label>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- FOOTER -->
+
+        <div class="flex justify-between items-center border-t px-6 py-4">
+
+            <div>
+
+                <button class="bg-blue-600 text-white px-4 py-2 rounded">
+                    + Add new task
+                </button>
+
+                <button class="ml-2 bg-gray-200 px-4 py-2 rounded">
+                    Cancel
+                </button>
+
+            </div>
+
+            <div>
+
+                <button class="bg-blue-600 text-white px-5 py-2 rounded">
+                    Save
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+/* =========================================================
+DATA MODEL
+========================================================= */
+
+const cardTasks = {
+
+    1: [],
+    2: [
+        { text: "Research user journey friction points", done: true },
+        { text: "Review homepage analytics", done: true },
+        { text: "NDA", done: true },
+        { text: "AVV", done: true },
+        { text: "Website", done: true },
+        { text: "Facebook", done: false }
+    ],
+    3: [],
+    4: []
+
+};
+
+let activeCard = null;
+
+
+/* =========================================================
+INITIALIZATION
+========================================================= */
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    initCards();
+    initModal();
+    initTaskControls();
+    initKanban();
+
+});
+
+
+/* =========================================================
+CARD INITIALIZATION
+========================================================= */
+
+function initCards() {
+
+    document.querySelectorAll(".kanban-card").forEach(card => {
+
+        const id = card.dataset.cardId;
+
+        if (!cardTasks[id]) cardTasks[id] = [];
+
+        renderChecklist(card);
+
+    });
+
+}
+
+
+/* =========================================================
+RENDER CARD CHECKLIST
+========================================================= */
+
+function renderChecklist(card) {
+
+    const id = card.dataset.cardId;
+    const tasks = cardTasks[id];
+
+    const list = card.querySelector(".taskList");
+
+    if (!list) return;
+
+    list.innerHTML = "";
+
+    tasks.forEach((task, index) => {
+
+        const row = document.createElement("label");
+
+        row.className = "flex items-center gap-2 text-sm";
+
+        row.innerHTML = `
+            <input type="checkbox"
+                   data-index="${index}"
+                   ${task.done ? "checked" : ""}>
+            ${task.text}
+        `;
+
+        const checkbox = row.querySelector("input");
+
+        checkbox.addEventListener("change", () => {
+
+            task.done = checkbox.checked;
+
+            updateProgress(card);
+
+            if (activeCard === card) renderModalTasks();
+
+        });
+
+        list.appendChild(row);
+
+    });
+
+    updateProgress(card);
+
+}
+
+
+/* =========================================================
+PROGRESS BAR
+========================================================= */
+
+function updateProgress(card) {
+
+    const id = card.dataset.cardId;
+    const tasks = cardTasks[id];
+
+    const done = tasks.filter(t => t.done).length;
+    const total = tasks.length;
+
+    const percent = total ? (done / total) * 100 : 0;
+
+    const text = card.querySelector(".taskProgressText");
+    const bar = card.querySelector(".taskProgressBar");
+
+    if (text) text.innerText = `${done}/${total}`;
+    if (bar) bar.style.width = percent + "%";
+
+}
+
+
+/* =========================================================
+MODAL
+========================================================= */
+
+function initModal() {
+
+    const modal = document.getElementById("taskModal");
+    const closeBtn = document.getElementById("closeModal");
+
+    document.querySelectorAll(".editTask").forEach(btn => {
+
+        btn.addEventListener("click", () => {
+
+            const card = btn.closest(".kanban-card");
+
+            activeCard = card;
+
+            renderModalTasks();
+
+            modal.classList.remove("hidden");
+
+        });
+
+    });
+
+    closeBtn.addEventListener("click", closeModal);
+
+    modal.addEventListener("click", e => {
+
+        if (e.target === modal) closeModal();
+
+    });
+
+}
+
+function closeModal() {
+
+    document.getElementById("taskModal").classList.add("hidden");
+
+    activeCard = null;
+
+}
+
+
+/* =========================================================
+RENDER MODAL TASKS
+========================================================= */
+
+function renderModalTasks() {
+
+    if (!activeCard) return;
+
+    const list = document.getElementById("modalTaskList");
+
+    const id = activeCard.dataset.cardId;
+    const tasks = cardTasks[id];
+
+    list.innerHTML = "";
+
+    tasks.forEach((task, index) => {
+
+        const row = document.createElement("div");
+
+        row.className = "flex items-center justify-between group";
+
+        row.innerHTML = `
+            <label class="flex items-center gap-2 w-full">
+
+                <input
+                    type="checkbox"
+                    class="modalCheckbox"
+                    data-index="${index}"
+                    ${task.done ? "checked" : ""}>
+
+                <input
+                    type="text"
+                    class="taskInput w-full bg-transparent focus:outline-none"
+                    data-index="${index}"
+                    value="${task.text}">
+
+            </label>
+
+            <button
+                class="deleteTask text-gray-400 opacity-0 group-hover:opacity-100 ml-2"
+                data-index="${index}">
+                ×
+            </button>
+        `;
+
+        list.appendChild(row);
+
+    });
+
+}
+
+
+/* =========================================================
+TASK CONTROLS
+========================================================= */
+
+function initTaskControls() {
+
+    document.getElementById("addTaskBtn").addEventListener("click", addTask);
+
+    document.addEventListener("input", updateTaskText);
+
+    document.addEventListener("change", toggleTask);
+
+    document.addEventListener("click", deleteTask);
+
+}
+
+
+/* =========================================================
+ADD TASK
+========================================================= */
+
+function addTask() {
+
+    if (!activeCard) return;
+
+    const id = activeCard.dataset.cardId;
+
+    cardTasks[id].push({
+        text: "",
+        done: false
+    });
+
+    renderModalTasks();
+    renderChecklist(activeCard);
+
+}
+
+
+/* =========================================================
+EDIT TASK
+========================================================= */
+
+function updateTaskText(e) {
+
+    if (!e.target.classList.contains("taskInput")) return;
+
+    const index = e.target.dataset.index;
+    const id = activeCard.dataset.cardId;
+
+    cardTasks[id][index].text = e.target.value;
+
+    renderChecklist(activeCard);
+
+}
+
+
+/* =========================================================
+CHECK TASK
+========================================================= */
+
+function toggleTask(e) {
+
+    if (!e.target.classList.contains("modalCheckbox")) return;
+
+    const index = e.target.dataset.index;
+    const id = activeCard.dataset.cardId;
+
+    cardTasks[id][index].done = e.target.checked;
+
+    renderChecklist(activeCard);
+
+}
+
+
+/* =========================================================
+DELETE TASK
+========================================================= */
+
+function deleteTask(e) {
+
+    if (!e.target.classList.contains("deleteTask")) return;
+
+    const index = e.target.dataset.index;
+    const id = activeCard.dataset.cardId;
+
+    cardTasks[id].splice(index, 1);
+
+    renderModalTasks();
+    renderChecklist(activeCard);
+
+}
+
+
+/* =========================================================
+KANBAN DRAG
+========================================================= */
+
+function initKanban() {
+
+    document.querySelectorAll(".kanban-list").forEach(list => {
+
+        new Sortable(list, {
+
+            group: "kanban",
+            animation: 150
+
+        });
+
+    });
+
+}
+
+</script>
+
+</body>
+</html>
