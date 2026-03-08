@@ -36,7 +36,7 @@
                     <span id="userName" class="text-sm font-medium text-gray-700"></span>
                 </div>
                 <a href="logout.php" class="text-sm text-red-600 hover:text-red-700 font-medium">Logout</a>
-                <span class="text-sm text-gray-500 font-mono" id="versionNumber">v1.0.33 (08.03.2026 - 21:30)</span>
+                <span class="text-sm text-gray-500 font-mono" id="versionNumber">v1.0.34 (08.03.2026 - 22:00)</span>
             </div>
         </div>
     </div>
@@ -176,7 +176,6 @@ MODAL
         <!-- HEADER -->
         <div class="flex items-center justify-between px-4 py-3 border-b">
             <div class="flex items-center gap-4">
-                <button id="closeModal" class="text-gray-500 hover:text-gray-700 text-2xl leading-none">×</button>
                 <div class="relative">
                     <select id="modalCardStatus" class="appearance-none bg-gray-100 hover:bg-gray-200 border-0 rounded px-3 py-1.5 pr-8 text-sm font-medium cursor-pointer focus:ring-2 focus:ring-blue-500">
                         <option value="todo">To Do</option>
@@ -188,6 +187,7 @@ MODAL
                     </svg>
                 </div>
             </div>
+            <button id="closeModal" class="text-gray-500 hover:text-gray-700 text-2xl leading-none">×</button>
         </div>
 
         <!-- MAIN CONTENT - Two Column Layout -->
@@ -900,6 +900,16 @@ function renderModalTasks() {
             // Re-render card
             renderAllCards();
         });
+        
+        // Handle ENTER key to create new task
+        input.addEventListener('keydown', async (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                
+                // Add new task
+                await addTask();
+            }
+        });
     });
 
     list.querySelectorAll('.deleteTask').forEach(btn => {
@@ -967,23 +977,32 @@ TASK OPERATIONS
 async function addTask() {
     const card = cards.find(c => c.id == activeCardId);
     if (!card) return;
-    
+
     const result = await apiCall('add_checklist', {
         card_id: activeCardId,
-        task: 'New task',
+        task: '',
         is_done: 0,
         position: card.checklist.length
     });
-    
+
     card.checklist.push({
         id: result.id,
-        task: 'New task',
+        task: '',
         is_done: 0,
         position: card.checklist.length
     });
-    
+
     renderModalTasks();
     renderAllCards();
+    
+    // Focus on the new input field
+    setTimeout(() => {
+        const newInput = document.querySelector(`.taskInput[data-checklist-id="${result.id}"]`);
+        if (newInput) {
+            newInput.focus();
+            newInput.select();
+        }
+    }, 50);
 }
 
 
