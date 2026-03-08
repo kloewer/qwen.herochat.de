@@ -1,5 +1,11 @@
 # Version History
 
+## v1.0.33 (08.03.2026 - 21:30)
+- Show member avatars on cards (overlapping circles)
+- Show member avatars + names in modal
+- Improved member display in assigned members section
+- Avatar fallback to default user icon
+
 ## v1.0.32 (08.03.2026 - 20:30)
 - Added user authentication system (2 users: Christian & Alvar)
 - Login page with email/password
