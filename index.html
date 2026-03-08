@@ -723,10 +723,11 @@ function renderActivityFeed(card) {
         type: 'creation',
         user: creatorInfo,
         text: 'created this card',
-        timestamp: formatTimestamp(card.created_at)
+        timestamp: formatTimestamp(card.created_at),
+        sortDate: new Date(card.created_at)
     });
 
-    // Comments (chronological order - will be reversed)
+    // Comments (chronological order - will be sorted)
     if (card.comments && card.comments.length > 0) {
         card.comments.forEach(comment => {
             const commentUserInfo = getUserInfo(comment.user_email || 'kloewer@gmail.com');
@@ -736,24 +737,26 @@ function renderActivityFeed(card) {
                 user: commentUserInfo,
                 text: 'made a comment',
                 commentText: escapeHtml(comment.comment_text),
-                timestamp: formatTimestamp(comment.created_at)
+                timestamp: formatTimestamp(comment.created_at),
+                sortDate: new Date(comment.created_at)
             });
         });
     }
 
-    // Checklist activities (chronological - will be reversed)
-    const checkedTasks = card.checklist.filter(t => t.is_done);
+    // Checklist activities with timestamp
+    const checkedTasks = card.checklist.filter(t => t.is_done && t.checked_at);
     checkedTasks.forEach(task => {
         activities.push({
             type: 'checklist',
             user: getUserInfo(currentUser?.email || 'kloewer@gmail.com'),
             text: `checked off "${escapeHtml(task.task)}"`,
-            timestamp: ''
+            timestamp: formatTimestamp(task.checked_at),
+            sortDate: new Date(task.checked_at)
         });
     });
 
-    // Reverse to show newest first
-    activities.reverse();
+    // Sort by date (newest first)
+    activities.sort((a, b) => b.sortDate - a.sortDate);
 
     // Render all activities with CONSISTENT styling
     feed.innerHTML = activities.map(activity => {
@@ -1368,7 +1371,7 @@ function initKanban() {
 
 <!-- FOOTER - Version Info -->
 <footer class="max-w-7xl mx-auto px-6 py-4 text-right">
-    <span class="text-sm text-gray-400 font-sans" id="versionFooter">v1.0.40 (09.03.2026 - 01:30)</span>
+    <span class="text-sm text-gray-400 font-sans" id="versionFooter">v1.0.41 (09.03.2026 - 02:30)</span>
 </footer>
 
 </body>

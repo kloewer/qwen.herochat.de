@@ -47,7 +47,7 @@ try {
             // Get checklists, comments, and assignments for each card
             foreach ($cards as &$card) {
                 // Get checklists
-                $stmt = $pdo->prepare("SELECT id, task, is_done, position, due_date, assigned_user, linked_card_id FROM checklists WHERE card_id = ? ORDER BY position");
+                $stmt = $pdo->prepare("SELECT id, task, is_done, position, due_date, assigned_user, linked_card_id, checked_at FROM checklists WHERE card_id = ? ORDER BY position");
                 $stmt->execute([$card['id']]);
                 $card['checklist'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -133,8 +133,9 @@ try {
 
         case 'toggle_checklist':
             $data = json_decode(file_get_contents('php://input'), true);
-            $stmt = $pdo->prepare("UPDATE checklists SET is_done = ? WHERE id = ?");
-            $stmt->execute([$data['is_done'] ? 1 : 0, $data['id']]);
+            $checkedAt = $data['is_done'] ? date('Y-m-d H:i:s') : null;
+            $stmt = $pdo->prepare("UPDATE checklists SET is_done = ?, checked_at = ? WHERE id = ?");
+            $stmt->execute([$data['is_done'] ? 1 : 0, $checkedAt, $data['id']]);
             echo json_encode(['success' => true]);
             break;
 

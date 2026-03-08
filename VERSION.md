@@ -1,5 +1,12 @@
 # Version History
 
+## v1.0.41 (09.03.2026 - 02:30)
+- Activity feed: ALL items now have timestamps (grey, below each item)
+- Comments AND checklist activities sorted together by time
+- Newest activity at TOP, oldest at BOTTOM
+- Added checked_at timestamp to track when tasks are completed
+- All activities show: Avatar + Name + Action + Timestamp
+
 ## v1.0.40 (09.03.2026 - 01:30)
 - Task action menu (3-dot) on hover in modal
 - Set due date for tasks (with emoji indicator 📅)
