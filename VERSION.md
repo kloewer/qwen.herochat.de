@@ -1,5 +1,13 @@
 # Version History
 
+## v1.0.38 (08.03.2026 - 23:30)
+- User avatar + Logout moved to RIGHT side of header
+- Checklist checkbox sync: Card ↔ Modal now in sync
+- Activity feed: Consistent styling for ALL items
+- All activity items: Avatar + Name + Action + Timestamp
+- Same format: "Christian created this card", "Christian made a comment", "Christian checked off..."
+- German datetime format (DD.MM.YYYY - HH:MM) on all items
+
 ## v1.0.37 (08.03.2026 - 23:00)
 - Activity section redesigned (Trello style)
 - Comment input moved to TOP of right sidebar
