@@ -378,23 +378,9 @@ async function loadCurrentUser() {
         if (user.email) {
             document.getElementById('userAvatar').src = '/user/' + user.email + '.png';
         }
-        
-        // Update version footer with current timestamp
-        updateVersionFooter();
     } catch (error) {
         console.error('Failed to load current user:', error);
     }
-}
-
-function updateVersionFooter() {
-    const now = new Date();
-    const day = String(now.getDate()).padStart(2, '0');
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const year = now.getFullYear();
-    const hours = String(now.getHours()).padStart(2, '0');
-    const minutes = String(now.getMinutes()).padStart(2, '0');
-    
-    document.getElementById('versionFooter').textContent = `v1.0.38 (${day}.${month}.${year} - ${hours}:${minutes})`;
 }
 
 /* =========================================================
@@ -1228,7 +1214,7 @@ function initKanban() {
 
 <!-- FOOTER - Version Info -->
 <footer class="max-w-7xl mx-auto px-6 py-4 text-right">
-    <span class="text-sm text-gray-400 font-sans" id="versionFooter">v1.0.37 (08.03.2026 - 23:00)</span>
+    <span class="text-sm text-gray-400 font-sans" id="versionFooter">v1.0.38 (08.03.2026 - 23:30)</span>
 </footer>
 
 </body>
