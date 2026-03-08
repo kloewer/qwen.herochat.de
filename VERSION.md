@@ -1,5 +1,18 @@
 # Version History
 
+## v1.0.32 (08.03.2026 - 20:30)
+- Added user authentication system (2 users: Christian & Alvar)
+- Login page with email/password
+- Session-based authentication
+- Logout button in header
+- Current user display with avatar
+- User filter in header (All Cards / Christian's / Alvar's)
+- Card assignment to multiple users
+- Members section in modal with dropdown
+- Comments attributed to users
+- New database tables: card_assignments, comments.user_email
+- API updated with auth endpoints
+
 ## v1.0.31 (08.03.2026 - 19:30)
 - Redesigned modal to match Trello design
 - X button moved to top-left corner

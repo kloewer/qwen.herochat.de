@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>QWEN HeroChat Onboarding</title>
+    <title>HeroChat Onboarding</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
@@ -13,9 +13,32 @@
 
 <!-- HEADER -->
 <header class="bg-white border-b shadow-sm">
-    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-        <h1 class="text-2xl font-bold text-gray-800">HeroChat Onboarding</h1>
-        <span class="text-sm text-gray-500 font-mono" id="versionNumber">v1.0.31 (08.03.2026 - 19:30)</span>
+    <div class="max-w-7xl mx-auto px-6 py-4">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-6">
+                <h1 class="text-2xl font-bold text-gray-800">HeroChat Onboarding</h1>
+                
+                <!-- User Filter -->
+                <div class="flex items-center gap-2">
+                    <label class="text-sm text-gray-500">Filter:</label>
+                    <select id="userFilter" class="border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:ring-2 focus:ring-blue-500">
+                        <option value="all">All Cards</option>
+                        <option value="kloewer@gmail.com">Christian's Cards</option>
+                        <option value="amollik@gmail.com">Alvar's Cards</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-4">
+                <!-- Current User Display -->
+                <div class="flex items-center gap-3">
+                    <img id="userAvatar" src="" alt="User Avatar" class="w-8 h-8 rounded-full bg-gray-200 object-cover" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22%236B7280%22><path d=%22M12 12a5 5 0 100-10 5 5 0 000 10zm0 2c-3.33 0-10 1.67-10 5v1h20v-1c0-3.33-6.67-5-10-5z%22/></svg>'">
+                    <span id="userName" class="text-sm font-medium text-gray-700"></span>
+                </div>
+                <a href="logout.php" class="text-sm text-red-600 hover:text-red-700 font-medium">Logout</a>
+                <span class="text-sm text-gray-500 font-mono" id="versionNumber">v1.0.32 (08.03.2026 - 20:30)</span>
+            </div>
+        </div>
     </div>
 </header>
 
@@ -169,13 +192,13 @@ MODAL
 
         <!-- MAIN CONTENT - Two Column Layout -->
         <div class="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x">
-            
+
             <!-- LEFT SIDEBAR - Main Content -->
             <div class="md:col-span-2 p-4">
-                
+
                 <!-- Title -->
                 <div class="mb-4">
-                    <input type="text" id="modalCardTitle" 
+                    <input type="text" id="modalCardTitle"
                            class="w-full text-lg font-semibold border-b-2 border-transparent hover:border-gray-300 focus:border-blue-500 focus:ring-0 px-2 py-1 transition-colors"
                            placeholder="Card title">
                 </div>
@@ -188,9 +211,40 @@ MODAL
                         </svg>
                         <h3 class="font-semibold">Description</h3>
                     </div>
-                    <textarea id="modalCardDescription" 
+                    <textarea id="modalCardDescription"
                               class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent min-h-[120px]"
                               placeholder="Add a more detailed description..."></textarea>
+                </div>
+
+                <!-- Members / Assignment -->
+                <div class="mb-4">
+                    <div class="flex items-center gap-2 mb-3 text-gray-700">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                        </svg>
+                        <h3 class="font-semibold">Members</h3>
+                    </div>
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <button id="addMemberBtn" class="text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1.5 rounded-lg inline-flex items-center gap-1">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                            </svg>
+                            Add member
+                        </button>
+                    </div>
+                    <!-- Member dropdown (hidden by default) -->
+                    <div id="memberDropdown" class="hidden mt-2 bg-white border rounded-lg shadow-lg p-2 space-y-1">
+                        <label class="flex items-center gap-2 p-2 hover:bg-gray-100 rounded cursor-pointer">
+                            <input type="checkbox" value="kloewer@gmail.com" class="member-checkbox w-4 h-4">
+                            <span>Christian (kloewer@gmail.com)</span>
+                        </label>
+                        <label class="flex items-center gap-2 p-2 hover:bg-gray-100 rounded cursor-pointer">
+                            <input type="checkbox" value="amollik@gmail.com" class="member-checkbox w-4 h-4">
+                            <span>Alvar (amollik@gmail.com)</span>
+                        </label>
+                    </div>
+                    <!-- Assigned members display -->
+                    <div id="assignedMembers" class="flex items-center gap-2 mt-3 flex-wrap"></div>
                 </div>
 
                 <!-- Checklists -->
@@ -262,8 +316,8 @@ API HELPERS
 
 const API_URL = 'api.php';
 
-async function apiCall(action, data = null) {
-    const url = API_URL + '?action=' + encodeURIComponent(action);
+async function apiCall(action, data = null, customUrl = null) {
+    const url = customUrl || (API_URL + '?action=' + encodeURIComponent(action));
 
     const options = {
         method: data ? 'POST' : 'GET',
@@ -304,11 +358,44 @@ INITIALIZATION
 ========================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
+    loadCurrentUser();
     loadCards();
     initModal();
     initAddCardButtons();
     initKanban();
+    initUserFilter();
 });
+
+/* =========================================================
+CURRENT USER
+========================================================= */
+
+let currentUser = null;
+
+async function loadCurrentUser() {
+    try {
+        const response = await fetch('api.php?action=get_current_user');
+        const user = await response.json();
+        currentUser = user;
+        
+        // Update header
+        if (user.email) {
+            document.getElementById('userName').textContent = user.display_name || user.email;
+            document.getElementById('userAvatar').src = '/user/' + user.email + '.png';
+        }
+    } catch (error) {
+        console.error('Failed to load current user:', error);
+    }
+}
+
+/* =========================================================
+USER FILTER
+========================================================= */
+
+function initUserFilter() {
+    const filter = document.getElementById('userFilter');
+    filter.addEventListener('change', loadCards);
+}
 
 
 /* =========================================================
@@ -317,7 +404,12 @@ LOAD CARDS FROM DATABASE
 
 async function loadCards() {
     try {
-        cards = await apiCall('get_cards');
+        const filterValue = document.getElementById('userFilter').value;
+        let url = 'api.php?action=get_cards';
+        if (filterValue && filterValue !== 'all') {
+            url += '&user=' + encodeURIComponent(filterValue);
+        }
+        cards = await apiCall('get_cards', null, url);
         renderAllCards();
     } catch (error) {
         console.error('Failed to load cards:', error);
@@ -453,6 +545,9 @@ function initModal() {
     const deleteBtn = document.getElementById('deleteCardBtn');
     const addTaskBtn = document.getElementById('addTaskBtn');
     const postCommentBtn = document.getElementById('postCommentBtn');
+    const addMemberBtn = document.getElementById('addMemberBtn');
+    const memberDropdown = document.getElementById('memberDropdown');
+    const memberCheckboxes = document.querySelectorAll('.member-checkbox');
 
     closeBtn.addEventListener('click', closeModal);
 
@@ -474,6 +569,27 @@ function initModal() {
     deleteBtn.addEventListener('click', deleteCard);
     addTaskBtn.addEventListener('click', addTask);
     postCommentBtn.addEventListener('click', postComment);
+    
+    // Member dropdown toggle
+    if (addMemberBtn) {
+        addMemberBtn.addEventListener('click', () => {
+            memberDropdown.classList.toggle('hidden');
+        });
+    }
+    
+    // Member checkbox changes
+    memberCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', () => {
+            updateAssignedMembers();
+        });
+    });
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+        if (memberDropdown && !memberDropdown.contains(e.target) && e.target !== addMemberBtn) {
+            memberDropdown.classList.add('hidden');
+        }
+    });
 }
 
 function openModal(cardId) {
@@ -491,11 +607,12 @@ function openModal(cardId) {
 
     renderModalTasks();
     renderActivityFeed(card);
+    renderAssignedMembers(card);
 
     const modal = document.getElementById('taskModal');
     modal.classList.remove('hidden');
     console.log('Modal opened, hidden class removed');
-    
+
     // Focus on title input
     setTimeout(() => {
         document.getElementById('modalCardTitle').focus();
@@ -611,6 +728,62 @@ function renderActivityFeed(card) {
     });
 }
 
+/* =========================================================
+ASSIGNED MEMBERS
+========================================================= */
+
+function renderAssignedMembers(card) {
+    const container = document.getElementById('assignedMembers');
+    const checkboxes = document.querySelectorAll('.member-checkbox');
+    const assignedUsers = card.assigned_users || [];
+    
+    // Update checkboxes
+    checkboxes.forEach(cb => {
+        cb.checked = assignedUsers.includes(cb.value);
+    });
+    
+    // Render assigned members badges
+    const userNames = {
+        'kloewer@gmail.com': 'Christian',
+        'amollik@gmail.com': 'Alvar'
+    };
+    
+    container.innerHTML = assignedUsers.map(email => `
+        <span class="inline-flex items-center gap-1 bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm">
+            ${userNames[email] || email}
+            <button class="hover:text-red-500" onclick="removeMember('${email}')">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </span>
+    `).join('');
+}
+
+function updateAssignedMembers() {
+    // Just re-render based on checkbox states
+    const card = cards.find(c => c.id == activeCardId);
+    if (!card) return;
+    
+    const checkboxes = document.querySelectorAll('.member-checkbox:checked');
+    card.assigned_users = Array.from(checkboxes).map(cb => cb.value);
+    
+    renderAssignedMembers(card);
+}
+
+function removeMember(email) {
+    const card = cards.find(c => c.id == activeCardId);
+    if (!card) return;
+    
+    card.assigned_users = (card.assigned_users || []).filter(e => e !== email);
+    
+    // Update checkbox
+    const checkbox = document.querySelector(`.member-checkbox[value="${email}"]`);
+    if (checkbox) checkbox.checked = false;
+    
+    renderAssignedMembers(card);
+}
+
 async function postComment() {
     const commentInput = document.getElementById('commentInput');
     const commentText = commentInput.value.trim();
@@ -722,23 +895,24 @@ async function saveCard() {
     const title = document.getElementById('modalCardTitle').value;
     const description = document.getElementById('modalCardDescription').value;
     const column_status = document.getElementById('modalCardStatus').value;
-    
+
     const card = cards.find(c => c.id == activeCardId);
     if (!card) return;
-    
+
     await apiCall('update_card', {
         id: activeCardId,
         title,
         description,
         column_status,
-        position: card.position
+        position: card.position,
+        assigned_users: card.assigned_users || []
     });
-    
+
     // Update local state
     card.title = title;
     card.description = description;
     card.column_status = column_status;
-    
+
     closeModal();
     renderAllCards();
 }
