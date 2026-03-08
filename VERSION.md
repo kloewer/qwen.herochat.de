@@ -1,5 +1,10 @@
 # Version History
 
+## v1.0.42 (09.03.2026 - 03:00)
+- Activity feed: All timestamps in GREY (not blue)
+- Consistent layout: Name → Content → Timestamp (all on separate lines)
+- Comment boxes: Name on top, comment in middle, timestamp below
+
 ## v1.0.41 (09.03.2026 - 02:30)
 - Activity feed: ALL items now have timestamps (grey, below each item)
 - Comments AND checklist activities sorted together by time

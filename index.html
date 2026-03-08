@@ -777,7 +777,7 @@ function renderActivityFeed(card) {
                             ${activity.commentText.replace(/\n/g, '<br>')}
                         </div>
                     ` : ''}
-                    <a href="#" class="text-xs text-blue-600 hover:underline mt-1 block">${activity.timestamp}</a>
+                    <p class="text-xs text-gray-500 mt-1">${activity.timestamp}</p>
                     ${activity.type === 'comment' ? `
                         <button class="delete-comment text-xs text-gray-500 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-opacity mt-1">
                             Delete
@@ -1371,7 +1371,7 @@ function initKanban() {
 
 <!-- FOOTER - Version Info -->
 <footer class="max-w-7xl mx-auto px-6 py-4 text-right">
-    <span class="text-sm text-gray-400 font-sans" id="versionFooter">v1.0.41 (09.03.2026 - 02:30)</span>
+    <span class="text-sm text-gray-400 font-sans" id="versionFooter">v1.0.42 (09.03.2026 - 03:00)</span>
 </footer>
 
 </body>
