@@ -1,5 +1,16 @@
 # Version History
 
+## v1.0.31 (08.03.2026 - 19:30)
+- Redesigned modal to match Trello design
+- X button moved to top-left corner
+- Status dropdown moved to header (top-left)
+- Removed Attachments and menu buttons
+- Activity section moved to top of right sidebar
+- Added comments feature with MySQL storage
+- New `comments` table in database
+- Comments sync to database on post
+- Delete comments with hover-to-reveal delete button
+
 ## v1.0.30 (08.03.2026 - 18:45)
 - Trello-style inline card creation
 - Click outside to cancel card creation

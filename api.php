@@ -27,14 +27,19 @@ try {
         case 'get_cards':
             $stmt = $pdo->query("SELECT * FROM cards ORDER BY column_status, position");
             $cards = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            
+
             // Get checklists for each card
             foreach ($cards as &$card) {
                 $stmt = $pdo->prepare("SELECT id, task, is_done, position FROM checklists WHERE card_id = ? ORDER BY position");
                 $stmt->execute([$card['id']]);
                 $card['checklist'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                
+                // Get comments for each card
+                $stmt = $pdo->prepare("SELECT id, comment_text, created_at FROM comments WHERE card_id = ? ORDER BY created_at ASC");
+                $stmt->execute([$card['id']]);
+                $card['comments'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
             }
-            
+
             echo json_encode($cards);
             break;
 
@@ -91,6 +96,21 @@ try {
         case 'delete_checklist':
             $id = $_GET['id'] ?? 0;
             $stmt = $pdo->prepare("DELETE FROM checklists WHERE id = ?");
+            $stmt->execute([$id]);
+            echo json_encode(['success' => true]);
+            break;
+
+        // === COMMENTS ===
+        case 'add_comment':
+            $data = json_decode(file_get_contents('php://input'), true);
+            $stmt = $pdo->prepare("INSERT INTO comments (card_id, comment_text) VALUES (?, ?)");
+            $stmt->execute([$data['card_id'], $data['comment_text']]);
+            echo json_encode(['id' => $pdo->lastInsertId(), 'success' => true]);
+            break;
+
+        case 'delete_comment':
+            $id = $_GET['id'] ?? 0;
+            $stmt = $pdo->prepare("DELETE FROM comments WHERE id = ?");
             $stmt->execute([$id]);
             echo json_encode(['success' => true]);
             break;
