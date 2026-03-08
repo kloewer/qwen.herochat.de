@@ -1,5 +1,12 @@
 # Version History
 
+## v1.0.36 (08.03.2026 - 22:30)
+- User avatar moved to far left in header
+- Removed user name from header (avatar + Logout only)
+- Version info moved to bottom-right footer
+- Version timestamp now uses live Unix time (auto-updates)
+- Footer in sans-serif gray text
+
 ## v1.0.35 (08.03.2026 - 22:15)
 - Auto-delete empty tasks when clicking away (blur event)
 - Clean up empty checklist items automatically

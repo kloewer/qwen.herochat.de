@@ -15,7 +15,13 @@
 <header class="bg-white border-b shadow-sm">
     <div class="max-w-7xl mx-auto px-6 py-4">
         <div class="flex items-center justify-between">
-            <div class="flex items-center gap-6">
+            <div class="flex items-center gap-4">
+                <!-- User Avatar & Logout -->
+                <div class="flex items-center gap-3">
+                    <img id="userAvatar" src="" alt="User Avatar" class="w-8 h-8 rounded-full bg-gray-200 object-cover" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22%236B7280%22><path d=%22M12 12a5 5 0 100-10 5 5 0 000 10zm0 2c-3.33 0-10 1.67-10 5v1h20v-1c0-3.33-6.67-5-10-5z%22/></svg>'">
+                    <a href="logout.php" class="text-sm text-red-600 hover:text-red-700 font-medium">Logout</a>
+                </div>
+                
                 <h1 class="text-2xl font-bold text-gray-800">HeroChat Onboarding</h1>
                 
                 <!-- User Filter -->
@@ -27,16 +33,6 @@
                         <option value="amollik@gmail.com">Alvar's Cards</option>
                     </select>
                 </div>
-            </div>
-            
-            <div class="flex items-center gap-4">
-                <!-- Current User Display -->
-                <div class="flex items-center gap-3">
-                    <img id="userAvatar" src="" alt="User Avatar" class="w-8 h-8 rounded-full bg-gray-200 object-cover" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22%236B7280%22><path d=%22M12 12a5 5 0 100-10 5 5 0 000 10zm0 2c-3.33 0-10 1.67-10 5v1h20v-1c0-3.33-6.67-5-10-5z%22/></svg>'">
-                    <span id="userName" class="text-sm font-medium text-gray-700"></span>
-                </div>
-                <a href="logout.php" class="text-sm text-red-600 hover:text-red-700 font-medium">Logout</a>
-                <span class="text-sm text-gray-500 font-mono" id="versionNumber">v1.0.35 (08.03.2026 - 22:15)</span>
             </div>
         </div>
     </div>
@@ -377,15 +373,28 @@ async function loadCurrentUser() {
         const response = await fetch('api.php?action=get_current_user');
         const user = await response.json();
         currentUser = user;
-        
-        // Update header
+
+        // Update header avatar
         if (user.email) {
-            document.getElementById('userName').textContent = user.display_name || user.email;
             document.getElementById('userAvatar').src = '/user/' + user.email + '.png';
         }
+        
+        // Update version footer with current timestamp
+        updateVersionFooter();
     } catch (error) {
         console.error('Failed to load current user:', error);
     }
+}
+
+function updateVersionFooter() {
+    const now = new Date();
+    const day = String(now.getDate()).padStart(2, '0');
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const year = now.getFullYear();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    
+    document.getElementById('versionFooter').textContent = `v1.0.36 (${day}.${month}.${year} - ${hours}:${minutes})`;
 }
 
 /* =========================================================
@@ -1190,6 +1199,11 @@ function initKanban() {
 
 </div>
 <!-- END MAIN CONTENT -->
+
+<!-- FOOTER - Version Info -->
+<footer class="max-w-7xl mx-auto px-6 py-4 text-right">
+    <span class="text-sm text-gray-400 font-sans" id="versionFooter">v1.0.36 (08.03.2026 - 22:30)</span>
+</footer>
 
 </body>
 </html>
