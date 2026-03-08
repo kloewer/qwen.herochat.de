@@ -1,3 +1,5 @@
 .env
 .deploy.sh
 .DS_Store
+config.php
+*.sql
