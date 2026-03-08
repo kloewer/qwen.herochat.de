@@ -1,5 +1,13 @@
 # Version History
 
+## v1.0.30 (08.03.2026 - 18:45)
+- Trello-style inline card creation
+- Click outside to cancel card creation
+- ENTER to create, SHIFT+ENTER for new line
+- ESC to cancel
+- Added QWEN.md project instructions
+- Auto-close all forms when clicking elsewhere
+
 ## v1.0.29 (08.03.2026 - 17:30)
 - Added header with title and version number
 - Fixed modal closing/reopening issue

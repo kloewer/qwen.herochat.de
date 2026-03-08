@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>HeroChat Onboarding</title>
+    <title>QWEN HeroChat Onboarding</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
@@ -15,7 +15,7 @@
 <header class="bg-white border-b shadow-sm">
     <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
         <h1 class="text-2xl font-bold text-gray-800">HeroChat Onboarding</h1>
-        <span class="text-sm text-gray-500 font-mono" id="versionNumber">v1.0.28 (08.03.2026 - 17:07)</span>
+        <span class="text-sm text-gray-500 font-mono" id="versionNumber">v1.0.30 (08.03.2026 - 18:45)</span>
     </div>
 </header>
 
@@ -32,9 +32,31 @@
 
 <div class="kanban-list space-y-4" id="todo-list"></div>
 
-<button class="add-card-btn mt-4 w-full border-2 border-dashed rounded-lg py-2 text-gray-500 hover:bg-gray-200" data-column="todo">
-+ Add new card
-</button>
+<!-- Add Card Form -->
+<div class="add-card-form mt-4" data-column="todo">
+    <button class="add-card-trigger w-full text-left text-gray-500 hover:text-gray-700 hover:bg-gray-200 px-3 py-2 rounded-lg flex items-center gap-2 transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+        </svg>
+        Add new card
+    </button>
+    <div class="add-card-input-wrapper hidden mt-2">
+        <textarea class="w-full border-2 border-blue-500 rounded-lg px-3 py-2 text-sm focus:outline-none resize-none" 
+                  rows="3" 
+                  placeholder="Enter a title for this card..."
+                  data-column="todo"></textarea>
+        <div class="flex items-center gap-2 mt-2">
+            <button class="add-card-submit bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium">
+                Add card
+            </button>
+            <button class="add-card-cancel text-gray-500 hover:text-gray-700 p-2 rounded hover:bg-gray-200">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+</div>
 
 </div>
 
@@ -49,9 +71,31 @@
 
 <div class="kanban-list space-y-4" id="in_progress-list"></div>
 
-<button class="add-card-btn mt-4 w-full border-2 border-dashed rounded-lg py-2 text-gray-500 hover:bg-gray-200" data-column="in_progress">
-+ Add new card
-</button>
+<!-- Add Card Form -->
+<div class="add-card-form mt-4" data-column="in_progress">
+    <button class="add-card-trigger w-full text-left text-gray-500 hover:text-gray-700 hover:bg-gray-200 px-3 py-2 rounded-lg flex items-center gap-2 transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+        </svg>
+        Add new card
+    </button>
+    <div class="add-card-input-wrapper hidden mt-2">
+        <textarea class="w-full border-2 border-blue-500 rounded-lg px-3 py-2 text-sm focus:outline-none resize-none" 
+                  rows="3" 
+                  placeholder="Enter a title for this card..."
+                  data-column="in_progress"></textarea>
+        <div class="flex items-center gap-2 mt-2">
+            <button class="add-card-submit bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium">
+                Add card
+            </button>
+            <button class="add-card-cancel text-gray-500 hover:text-gray-700 p-2 rounded hover:bg-gray-200">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+</div>
 
 </div>
 
@@ -66,9 +110,31 @@
 
 <div class="kanban-list space-y-4" id="done-list"></div>
 
-<button class="add-card-btn mt-4 w-full border-2 border-dashed rounded-lg py-2 text-gray-500 hover:bg-gray-200" data-column="done">
-+ Add new card
-</button>
+<!-- Add Card Form -->
+<div class="add-card-form mt-4" data-column="done">
+    <button class="add-card-trigger w-full text-left text-gray-500 hover:text-gray-700 hover:bg-gray-200 px-3 py-2 rounded-lg flex items-center gap-2 transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+        </svg>
+        Add new card
+    </button>
+    <div class="add-card-input-wrapper hidden mt-2">
+        <textarea class="w-full border-2 border-blue-500 rounded-lg px-3 py-2 text-sm focus:outline-none resize-none" 
+                  rows="3" 
+                  placeholder="Enter a title for this card..."
+                  data-column="done"></textarea>
+        <div class="flex items-center gap-2 mt-2">
+            <button class="add-card-submit bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium">
+                Add card
+            </button>
+            <button class="add-card-cancel text-gray-500 hover:text-gray-700 p-2 rounded hover:bg-gray-200">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+</div>
 
 </div>
 
@@ -696,37 +762,132 @@ async function addTask() {
 
 
 /* =========================================================
-ADD NEW CARD
+ADD CARD INLINE (TRELLO STYLE)
 ========================================================= */
 
 function initAddCardButtons() {
-    document.querySelectorAll('.add-card-btn').forEach(btn => {
-        btn.addEventListener('click', async (e) => {
-            const column = e.target.dataset.column;
-            const title = prompt('Enter card title:');
-            if (!title) return;
+    // Show input form when clicking "Add new card" button
+    document.querySelectorAll('.add-card-trigger').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const form = btn.closest('.add-card-form');
+            const wrapper = form.querySelector('.add-card-input-wrapper');
+            const textarea = form.querySelector('textarea');
             
-            const cardCount = document.getElementById(column + '-list').children.length;
-            
-            const result = await apiCall('create_card', {
-                title,
-                description: '',
-                column_status: column,
-                position: cardCount
-            });
-            
-            cards.push({
-                id: result.id,
-                title,
-                description: '',
-                column_status: column,
-                position: cardCount,
-                checklist: []
-            });
-            
-            renderAllCards();
+            wrapper.classList.remove('hidden');
+            btn.classList.add('hidden');
+            textarea.focus();
         });
     });
+
+    // Hide form when clicking cancel
+    document.querySelectorAll('.add-card-cancel').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            hideAddCardForm(btn.closest('.add-card-form'));
+        });
+    });
+
+    // Submit card on button click
+    document.querySelectorAll('.add-card-submit').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            const form = btn.closest('.add-card-form');
+            const textarea = form.querySelector('textarea');
+            const title = textarea.value.trim();
+            
+            if (!title) {
+                textarea.focus();
+                return;
+            }
+
+            await submitNewCard(form, textarea);
+        });
+    });
+
+    // Handle ENTER key to submit, SHIFT+ENTER for new line
+    document.querySelectorAll('.add-card-form textarea').forEach(textarea => {
+        textarea.addEventListener('keydown', async (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const title = textarea.value.trim();
+                if (!title) return;
+
+                const form = textarea.closest('.add-card-form');
+                await submitNewCard(form, textarea);
+            }
+        });
+    });
+
+    // Auto-resize textarea
+    document.querySelectorAll('.add-card-form textarea').forEach(textarea => {
+        textarea.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = this.scrollHeight + 'px';
+        });
+    });
+
+    // Close on Escape
+    document.querySelectorAll('.add-card-form textarea').forEach(textarea => {
+        textarea.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                e.stopPropagation();
+                const form = textarea.closest('.add-card-form');
+                hideAddCardForm(form);
+            }
+        });
+    });
+
+    // Close all forms when clicking elsewhere on the page
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.add-card-form')) {
+            document.querySelectorAll('.add-card-form').forEach(form => {
+                hideAddCardForm(form);
+            });
+        }
+    });
+}
+
+function hideAddCardForm(form) {
+    const wrapper = form.querySelector('.add-card-input-wrapper');
+    const textarea = form.querySelector('textarea');
+    const trigger = form.querySelector('.add-card-trigger');
+    
+    textarea.value = '';
+    textarea.style.height = 'auto';
+    wrapper.classList.add('hidden');
+    trigger.classList.remove('hidden');
+}
+
+async function submitNewCard(form, textarea) {
+    const title = textarea.value.trim();
+    const column = textarea.dataset.column;
+    const cardCount = document.getElementById(column + '-list').children.length;
+
+    const result = await apiCall('create_card', {
+        title,
+        description: '',
+        column_status: column,
+        position: cardCount
+    });
+
+    cards.push({
+        id: result.id,
+        title,
+        description: '',
+        column_status: column,
+        position: cardCount,
+        checklist: []
+    });
+
+    renderAllCards();
+
+    // Clear and keep focus for adding another card
+    textarea.value = '';
+    textarea.style.height = 'auto';
+    textarea.focus();
 }
 
 
