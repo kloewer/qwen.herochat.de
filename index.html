@@ -267,13 +267,15 @@ MODAL
 
                 <!-- Comment Input (TOP) -->
                 <div class="p-4 border-b bg-white">
-                    <textarea id="commentInput"
-                              class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 resize-none"
-                              rows="3"
-                              placeholder="Write a comment..."></textarea>
-                    <button id="postCommentBtn" class="mt-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium w-full">
-                        Post comment
-                    </button>
+                    <div class="relative">
+                        <textarea id="commentInput"
+                                  class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 resize-none transition-all duration-200"
+                                  rows="1"
+                                  placeholder="Write a comment..."></textarea>
+                        <button id="postCommentBtn" class="mt-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium w-full hidden">
+                            Post comment
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Activity Feed (BELOW) -->
@@ -590,7 +592,35 @@ function initModal() {
     deleteBtn.addEventListener('click', deleteCard);
     addTaskBtn.addEventListener('click', addTask);
     postCommentBtn.addEventListener('click', postComment);
-    
+
+    // Expandable comment input
+    const commentInput = document.getElementById('commentInput');
+    if (commentInput) {
+        commentInput.addEventListener('focus', () => {
+            commentInput.style.rows = '3';
+            commentInput.setAttribute('rows', '3');
+            commentInput.classList.add('border-blue-400');
+        });
+
+        commentInput.addEventListener('blur', () => {
+            if (!commentInput.value.trim()) {
+                commentInput.style.rows = '1';
+                commentInput.setAttribute('rows', '1');
+                commentInput.classList.remove('border-blue-400');
+                postCommentBtn.classList.add('hidden');
+            }
+        });
+
+        commentInput.addEventListener('input', () => {
+            // Show/hide Save button based on content
+            if (commentInput.value.trim()) {
+                postCommentBtn.classList.remove('hidden');
+            } else {
+                postCommentBtn.classList.add('hidden');
+            }
+        });
+    }
+
     // Member dropdown toggle
     if (addMemberBtn) {
         addMemberBtn.addEventListener('click', () => {
@@ -1214,7 +1244,7 @@ function initKanban() {
 
 <!-- FOOTER - Version Info -->
 <footer class="max-w-7xl mx-auto px-6 py-4 text-right">
-    <span class="text-sm text-gray-400 font-sans" id="versionFooter">v1.0.38 (08.03.2026 - 23:30)</span>
+    <span class="text-sm text-gray-400 font-sans" id="versionFooter">v1.0.39 (09.03.2026 - 00:30)</span>
 </footer>
 
 </body>

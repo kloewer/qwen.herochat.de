@@ -47,7 +47,7 @@ try {
             // Get checklists, comments, and assignments for each card
             foreach ($cards as &$card) {
                 // Get checklists
-                $stmt = $pdo->prepare("SELECT id, task, is_done, position FROM checklists WHERE card_id = ? ORDER BY position");
+                $stmt = $pdo->prepare("SELECT id, task, is_done, position, due_date, assigned_user, linked_card_id FROM checklists WHERE card_id = ? ORDER BY position");
                 $stmt->execute([$card['id']]);
                 $card['checklist'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -119,15 +119,15 @@ try {
         // === CHECKLISTS ===
         case 'add_checklist':
             $data = json_decode(file_get_contents('php://input'), true);
-            $stmt = $pdo->prepare("INSERT INTO checklists (card_id, task, is_done, position) VALUES (?, ?, ?, ?)");
-            $stmt->execute([$data['card_id'], $data['task'], $data['is_done'] ?? 0, $data['position'] ?? 0]);
+            $stmt = $pdo->prepare("INSERT INTO checklists (card_id, task, is_done, position, due_date, assigned_user) VALUES (?, ?, ?, ?, ?, ?)");
+            $stmt->execute([$data['card_id'], $data['task'], $data['is_done'] ?? 0, $data['position'] ?? 0, $data['due_date'] ?? null, $data['assigned_user'] ?? null]);
             echo json_encode(['id' => $pdo->lastInsertId(), 'success' => true]);
             break;
 
         case 'update_checklist':
             $data = json_decode(file_get_contents('php://input'), true);
-            $stmt = $pdo->prepare("UPDATE checklists SET task = ?, is_done = ? WHERE id = ?");
-            $stmt->execute([$data['task'], $data['is_done'], $data['id']]);
+            $stmt = $pdo->prepare("UPDATE checklists SET task = ?, is_done = ?, due_date = ?, assigned_user = ? WHERE id = ?");
+            $stmt->execute([$data['task'], $data['is_done'], $data['due_date'] ?? null, $data['assigned_user'] ?? null, $data['id']]);
             echo json_encode(['success' => true]);
             break;
 
@@ -142,6 +142,43 @@ try {
             $id = $_GET['id'] ?? 0;
             $stmt = $pdo->prepare("DELETE FROM checklists WHERE id = ?");
             $stmt->execute([$id]);
+            echo json_encode(['success' => true]);
+            break;
+
+        case 'convert_checklist_to_card':
+            $data = json_decode(file_get_contents('php://input'), true);
+            // Get the checklist item
+            $stmt = $pdo->prepare("SELECT * FROM checklists WHERE id = ?");
+            $stmt->execute([$data['checklist_id']]);
+            $checklist = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if ($checklist) {
+                // Create new card with same title
+                $stmt = $pdo->prepare("INSERT INTO cards (title, description, column_status, position, created_by) VALUES (?, ?, ?, ?, ?)");
+                $stmt->execute([$checklist['task'], 'Converted from checklist item', 'todo', 0, $userEmail]);
+                $newCardId = $pdo->lastInsertId();
+                
+                // Link checklist to new card
+                $stmt = $pdo->prepare("UPDATE checklists SET linked_card_id = ? WHERE id = ?");
+                $stmt->execute([$newCardId, $data['checklist_id']]);
+                
+                echo json_encode(['success' => true, 'new_card_id' => $newCardId]);
+            } else {
+                echo json_encode(['error' => 'Checklist not found']);
+            }
+            break;
+
+        case 'set_checklist_due_date':
+            $data = json_decode(file_get_contents('php://input'), true);
+            $stmt = $pdo->prepare("UPDATE checklists SET due_date = ? WHERE id = ?");
+            $stmt->execute([$data['due_date'], $data['id']]);
+            echo json_encode(['success' => true]);
+            break;
+
+        case 'assign_checklist':
+            $data = json_decode(file_get_contents('php://input'), true);
+            $stmt = $pdo->prepare("UPDATE checklists SET assigned_user = ? WHERE id = ?");
+            $stmt->execute([$data['assigned_user'], $data['id']]);
             echo json_encode(['success' => true]);
             break;
 

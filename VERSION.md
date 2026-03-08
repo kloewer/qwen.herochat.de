@@ -1,5 +1,13 @@
 # Version History
 
+## v1.0.39 (09.03.2026 - 00:30)
+- Checklist enhancements: due_date, assigned_user, linked_card_id fields
+- New API endpoints: convert_checklist_to_card, set_checklist_due_date, assign_checklist
+- Comment input: 1 line by default, expands on focus
+- Save button hidden until comment has content
+- Comment input collapses back when empty on blur
+- Migration file for checklist enhancements
+
 ## v1.0.38 (08.03.2026 - 23:30)
 - User avatar + Logout moved to RIGHT side of header
 - Checklist checkbox sync: Card ↔ Modal now in sync
