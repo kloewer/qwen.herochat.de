@@ -172,8 +172,22 @@ async function apiCall(action, data = null) {
     
     if (data) options.body = JSON.stringify(data);
     
-    const response = await fetch(url, options);
-    return await response.json();
+    try {
+        const response = await fetch(url, options);
+        const result = await response.json();
+        
+        if (result.error) {
+            console.error('API Error:', result.error);
+            alert('Error: ' + result.error);
+            throw new Error(result.error);
+        }
+        
+        return result;
+    } catch (error) {
+        console.error('Fetch error:', error);
+        alert('Failed to connect to API. Make sure config.php is set up with correct database credentials.');
+        throw error;
+    }
 }
 
 
