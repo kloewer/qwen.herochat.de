@@ -1,5 +1,15 @@
 # Version History
 
+## v1.0.40 (09.03.2026 - 01:30)
+- Task action menu (3-dot) on hover in modal
+- Set due date for tasks (with emoji indicator 📅)
+- Assign member to tasks (shows avatar)
+- Convert task to linked card (shows link icon 🔗)
+- Delete task (unlinks, keeps card if linked)
+- Activity feed sorted: Newest on TOP, oldest at bottom
+- Task badges: due date, assignee avatar, link icon
+- Overdue tasks show red calendar icon
+
 ## v1.0.39 (09.03.2026 - 00:30)
 - Checklist enhancements: due_date, assigned_user, linked_card_id fields
 - New API endpoints: convert_checklist_to_card, set_checklist_due_date, assign_checklist
