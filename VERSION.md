@@ -1,5 +1,15 @@
 # Version History
 
+## v1.0.37 (08.03.2026 - 23:00)
+- Activity section redesigned (Trello style)
+- Comment input moved to TOP of right sidebar
+- Activity feed below with scroll
+- Full user details: avatar, name, timestamp
+- German date/time format (DD.MM.YYYY - HH:MM)
+- Comments show in white boxes with border
+- Delete button appears on hover
+- Newest comments shown first
+
 ## v1.0.36 (08.03.2026 - 22:30)
 - User avatar moved to far left in header
 - Removed user name from header (avatar + Logout only)

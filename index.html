@@ -263,28 +263,28 @@ MODAL
             </div>
 
             <!-- RIGHT SIDEBAR - Activity -->
-            <div class="md:col-span-1 bg-gray-50 p-4">
-                
-                <!-- Activity Header -->
-                <div class="flex items-center gap-2 mb-4 text-gray-700">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
-                    </svg>
-                    <h3 class="font-semibold">Activity</h3>
-                </div>
+            <div class="md:col-span-1 bg-gray-50 flex flex-col">
 
-                <!-- Activity Feed -->
-                <div id="activityFeed" class="space-y-3 mb-4 max-h-64 overflow-y-auto"></div>
-
-                <!-- Comment Input -->
-                <div class="border-t pt-3">
-                    <textarea id="commentInput" 
+                <!-- Comment Input (TOP) -->
+                <div class="p-4 border-b bg-white">
+                    <textarea id="commentInput"
                               class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 resize-none"
                               rows="3"
                               placeholder="Write a comment..."></textarea>
                     <button id="postCommentBtn" class="mt-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium w-full">
                         Post comment
                     </button>
+                </div>
+
+                <!-- Activity Feed (BELOW) -->
+                <div class="flex-1 overflow-y-auto p-4">
+                    <div class="flex items-center gap-2 mb-4 text-gray-700">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <h3 class="font-semibold">Activity</h3>
+                    </div>
+                    <div id="activityFeed" class="space-y-4"></div>
                 </div>
 
             </div>
@@ -394,7 +394,7 @@ function updateVersionFooter() {
     const hours = String(now.getHours()).padStart(2, '0');
     const minutes = String(now.getMinutes()).padStart(2, '0');
     
-    document.getElementById('versionFooter').textContent = `v1.0.36 (${day}.${month}.${year} - ${hours}:${minutes})`;
+    document.getElementById('versionFooter').textContent = `v1.0.37 (${day}.${month}.${year} - ${hours}:${minutes})`;
 }
 
 /* =========================================================
@@ -670,27 +670,48 @@ function formatDateTime(date) {
 function renderActivityFeed(card) {
     const feed = document.getElementById('activityFeed');
     const activities = [];
+    const userNames = {
+        'kloewer@gmail.com': 'Christian',
+        'amollik@gmail.com': 'Alvar'
+    };
+
+    // Helper to get user info
+    function getUserInfo(email) {
+        return {
+            name: userNames[email] || email.split('@')[0],
+            avatar: `/user/${encodeURIComponent(email)}.png`,
+            initials: email === 'kloewer@gmail.com' ? 'CK' : (email === 'amollik@gmail.com' ? 'AM' : email.substring(0, 2).toUpperCase())
+        };
+    }
 
     // Card creation activity
+    const creatorInfo = getUserInfo(card.created_by || 'kloewer@gmail.com');
     activities.push({
         type: 'creation',
-        icon: '●',
-        iconBg: 'bg-blue-500',
-        text: `<span class="font-medium text-gray-800">You</span> created this card`,
-        time: formatDateTime(new Date(card.created_at))
+        user: creatorInfo,
+        action: 'created this card',
+        time: formatDateTime(new Date(card.created_at)),
+        fullTime: new Date(card.created_at).toLocaleString('de-DE', { 
+            day: '2-digit', month: '2-digit', year: 'numeric', 
+            hour: '2-digit', minute: '2-digit'
+        })
     });
 
-    // Comments
+    // Comments (newest first)
     if (card.comments && card.comments.length > 0) {
-        card.comments.forEach(comment => {
+        [...card.comments].reverse().forEach(comment => {
+            const commentUserInfo = getUserInfo(comment.user_email || 'kloewer@gmail.com');
             activities.push({
                 type: 'comment',
                 commentId: comment.id,
-                icon: '💬',
-                iconBg: 'bg-purple-500',
-                text: `<span class="font-medium text-gray-800">You</span> commented`,
+                user: commentUserInfo,
+                action: 'commented',
                 commentText: escapeHtml(comment.comment_text),
-                time: formatDateTime(new Date(comment.created_at))
+                time: formatDateTime(new Date(comment.created_at)),
+                fullTime: new Date(comment.created_at).toLocaleString('de-DE', { 
+                    day: '2-digit', month: '2-digit', year: 'numeric', 
+                    hour: '2-digit', minute: '2-digit'
+                })
             });
         });
     }
@@ -700,51 +721,72 @@ function renderActivityFeed(card) {
         if (task.is_done) {
             activities.push({
                 type: 'checklist',
-                icon: '✓',
-                iconBg: 'bg-green-500',
-                text: `<span class="font-medium text-gray-800">You</span> checked off <span class="font-medium">"${escapeHtml(task.task)}"</span>`,
+                user: getUserInfo(currentUser?.email || 'kloewer@gmail.com'),
+                action: `checked off "${escapeHtml(task.task)}"`,
                 time: ''
             });
         }
     });
 
-    feed.innerHTML = activities.map((activity, index) => {
+    // Render activities
+    feed.innerHTML = activities.map(activity => {
+        const avatarHTML = activity.user.avatar ? 
+            `<img src="${activity.user.avatar}" alt="${activity.user.name}" class="w-8 h-8 rounded-full object-cover" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22%236B7280%22><path d=%22M12 12a5 5 0 100-10 5 5 0 000 10zm0 2c-3.33 0-10 1.67-10 5v1h20v-1c0-3.33-6.67-5-10-5z%22/></svg>'">` :
+            `<div class="w-8 h-8 rounded-full bg-orange-500 text-white flex items-center justify-center text-xs font-bold">${activity.user.initials}</div>`;
+
         if (activity.type === 'comment') {
             return `
                 <div class="flex items-start gap-3 group" data-comment-id="${activity.commentId}">
-                    <div class="w-8 h-8 rounded-full ${activity.iconBg} text-white flex items-center justify-center text-sm font-medium flex-shrink-0">
-                        ${activity.icon}
+                    ${avatarHTML}
+                    <div class="flex-1">
+                        <div class="flex items-baseline gap-2">
+                            <span class="font-semibold text-gray-800">${activity.user.name}</span>
+                            <a href="#" class="text-xs text-blue-600 hover:underline">${activity.fullTime}</a>
+                        </div>
+                        <div class="mt-2 bg-white border rounded-lg p-3 text-sm text-gray-800 shadow-sm">
+                            ${activity.commentText.replace(/\n/g, '<br>')}
+                        </div>
+                        <div class="mt-1 flex items-center gap-2">
+                            <button class="delete-comment text-xs text-gray-500 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        } else if (activity.type === 'creation') {
+            return `
+                <div class="flex items-start gap-3">
+                    ${avatarHTML}
+                    <div class="flex-1">
+                        <p class="text-sm text-gray-700">
+                            <span class="font-semibold">${activity.user.name}</span> ${activity.action}
+                        </p>
+                        <a href="#" class="text-xs text-blue-600 hover:underline">${activity.fullTime}</a>
+                    </div>
+                </div>
+            `;
+        } else {
+            return `
+                <div class="flex items-start gap-3">
+                    <div class="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center text-sm flex-shrink-0">
+                        ✓
                     </div>
                     <div class="flex-1">
-                        <p class="text-sm text-gray-600">${activity.text}</p>
-                        <div class="mt-1 bg-white rounded-lg p-2 text-sm text-gray-800">${activity.commentText}</div>
-                        <p class="text-xs text-gray-400 mt-1">${activity.time}</p>
+                        <p class="text-sm text-gray-700">
+                            <span class="font-semibold">${activity.user.name}</span> ${activity.action}
+                        </p>
                     </div>
-                    <button class="delete-comment text-gray-400 opacity-0 group-hover:opacity-100 hover:text-red-500" data-comment-id="${activity.commentId}">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                        </svg>
-                    </button>
                 </div>
             `;
         }
-        return `
-            <div class="flex items-start gap-3">
-                <div class="w-8 h-8 rounded-full ${activity.iconBg} text-white flex items-center justify-center text-sm font-medium flex-shrink-0">
-                    ${activity.icon}
-                </div>
-                <div class="flex-1">
-                    <p class="text-sm text-gray-600">${activity.text}</p>
-                    ${activity.time ? `<p class="text-xs text-gray-400 mt-1">${activity.time}</p>` : ''}
-                </div>
-            </div>
-        `;
     }).join('');
 
     // Attach delete comment listeners
     feed.querySelectorAll('.delete-comment').forEach(btn => {
         btn.addEventListener('click', async (e) => {
-            const commentId = e.currentTarget.dataset.commentId;
+            e.preventDefault();
+            const commentId = e.currentTarget.closest('[data-comment-id]').dataset.commentId;
             if (confirm('Delete this comment?')) {
                 await apiCall('delete_comment', { id: commentId });
                 // Remove from local state
@@ -1202,7 +1244,7 @@ function initKanban() {
 
 <!-- FOOTER - Version Info -->
 <footer class="max-w-7xl mx-auto px-6 py-4 text-right">
-    <span class="text-sm text-gray-400 font-sans" id="versionFooter">v1.0.36 (08.03.2026 - 22:30)</span>
+    <span class="text-sm text-gray-400 font-sans" id="versionFooter">v1.0.37 (08.03.2026 - 23:00)</span>
 </footer>
 
 </body>
