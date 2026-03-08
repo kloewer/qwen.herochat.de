@@ -1,5 +1,9 @@
 # Version History
 
+## v1.0.35 (08.03.2026 - 22:15)
+- Auto-delete empty tasks when clicking away (blur event)
+- Clean up empty checklist items automatically
+
 ## v1.0.34 (08.03.2026 - 22:00)
 - Moved X (close button) to top-right corner of modal header
 - New tasks start with empty input + auto-focus (no "New task" text)
