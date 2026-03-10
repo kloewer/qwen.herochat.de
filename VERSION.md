@@ -1,5 +1,13 @@
 # Version History
 
+## v1.0.48 (10.03.2026 - 14:30)
+- Updated checklist checkbox styling to match Tailwind design system
+- Checkboxes: w-4 h-4, border, rounded, bg-gray-100, focus:ring-2 focus:ring-blue-500
+- Task dropdown menu now uses Flowbite dropdown component with proper styling
+- New SVG icons for dropdown menu items (calendar, user, card, trash)
+- Dropdown menu: white background, border, shadow, proper spacing and hover states
+- Task items: proper text color (gray-800) and line-through styling for completed tasks
+
 ## v1.0.47 (10.03.2026 - 14:00)
 - Replaced native datetime-local input with Flowbite datepicker
 - Datepicker features: calendar popup, autohide, date format (YYYY-MM-DD)

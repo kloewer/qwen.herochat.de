@@ -484,15 +484,15 @@ function renderCard(card) {
             <div class="bg-gray-200 h-2 rounded">
                 <div class="taskProgressBar bg-blue-500 h-2 rounded" style="width: ${percent}%"></div>
             </div>
-            <div class="taskList mt-3 space-y-1 text-sm">
+            <div class="taskList mt-3 space-y-2">
                 ${card.checklist.map(task => `
-                    <label class="flex items-center gap-2 text-sm">
+                    <div class="flex items-center gap-2">
                         <input type="checkbox"
                                data-checklist-id="${task.id}"
                                ${task.is_done ? 'checked' : ''}
-                               class="inline-checkbox">
-                        <span class="${task.is_done ? 'line-through text-gray-400' : ''}">${escapeHtml(task.task)}</span>
-                    </label>
+                               class="inline-checkbox w-4 h-4 border border-gray-300 rounded bg-gray-100 focus:ring-2 focus:ring-blue-500 cursor-pointer">
+                        <span class="text-sm ${task.is_done ? 'line-through text-gray-400' : 'text-gray-800'}">${escapeHtml(task.task)}</span>
+                    </div>
                 `).join('')}
             </div>
         </div>
@@ -1044,53 +1044,77 @@ function renderModalTasks() {
         'amollik@gmail.com': 'Alvar'
     };
 
-    list.innerHTML = card.checklist.map(task => {
+    list.innerHTML = card.checklist.map((task, index) => {
         const hasDueDate = task.due_date && new Date(task.due_date) > new Date();
         const isOverdue = task.due_date && new Date(task.due_date) < new Date() && !task.is_done;
         const hasAssignee = task.assigned_user;
         const hasLink = task.linked_card_id;
         const dueDateStr = task.due_date ? new Date(task.due_date).toLocaleString('de-DE', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) : '';
+        const dropdownId = `task-dropdown-${task.id}`;
 
         return `
-        <div class="group flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100 ${task.is_done ? 'opacity-60' : ''}" data-checklist-id="${task.id}">
-            <input type="checkbox"
-                   data-checklist-id="${task.id}"
-                   ${task.is_done ? 'checked' : ''}
-                   class="modal-checkbox w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer">
+        <div class="group flex items-center gap-3 p-2 rounded-lg ${task.is_done ? 'bg-gray-50' : 'hover:bg-gray-50'}" data-checklist-id="${task.id}">
+            <div class="flex items-center h-5">
+                <input type="checkbox"
+                       data-checklist-id="${task.id}"
+                       ${task.is_done ? 'checked' : ''}
+                       class="modal-checkbox w-4 h-4 border border-gray-300 rounded bg-gray-100 focus:ring-2 focus:ring-blue-500 cursor-pointer">
+            </div>
             <input type="text"
-                   class="taskInput flex-1 bg-transparent focus:outline-none text-gray-800 ${task.is_done ? 'line-through text-gray-400' : ''}"
+                   class="taskInput flex-1 bg-transparent focus:outline-none text-sm ${task.is_done ? 'line-through text-gray-400' : 'text-gray-800'}"
                    data-checklist-id="${task.id}"
                    value="${escapeHtml(task.task)}">
-            
+
             <!-- Task badges -->
             <div class="flex items-center gap-1">
                 ${hasLink ? `<svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" title="Linked to card"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>` : ''}
                 ${hasAssignee ? `<img src="/user/${encodeURIComponent(task.assigned_user)}.png" class="w-5 h-5 rounded-full" title="${userNames[task.assigned_user] || task.assigned_user}" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22%236B7280%22><path d=%22M12 12a5 5 0 100-10 5 5 0 000 10zm0 2c-3.33 0-10 1.67-10 5v1h20v-1c0-3.33-6.67-5-10-5z%22/></svg>'">` : ''}
                 ${hasDueDate ? `<span class="text-xs ${isOverdue ? 'text-red-600 font-bold' : 'text-gray-500'}" title="${dueDateStr}">📅</span>` : ''}
             </div>
-            
+
             <!-- Action menu button -->
-            <button class="taskMenuBtn text-gray-400 opacity-0 group-hover:opacity-100 hover:text-gray-600 transition-opacity p-1" data-checklist-id="${task.id}">
-                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"/>
+            <button id="${dropdownId}-btn" data-dropdown-toggle="${dropdownId}" class="taskMenuBtn text-gray-400 opacity-0 group-hover:opacity-100 hover:text-gray-600 transition-opacity p-1" data-checklist-id="${task.id}" type="button">
+                <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 12h.01m6 0h.01m6 0h.01"/>
                 </svg>
             </button>
-            
-            <!-- Hidden action menu popup -->
-            <div class="taskMenuPopup hidden absolute bg-white border rounded-lg shadow-lg z-50 min-w-[180px]">
-                <button class="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm setDueDate" data-checklist-id="${task.id}">
-                    📅 Set due date
-                </button>
-                <button class="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm assignTask" data-checklist-id="${task.id}">
-                    👤 Assign member
-                </button>
-                <button class="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm convertToCard" data-checklist-id="${task.id}">
-                    📋 Convert to card
-                </button>
-                <hr class="my-1">
-                <button class="w-full text-left px-4 py-2 hover:bg-red-50 text-red-600 text-sm deleteTask" data-checklist-id="${task.id}">
-                    🗑️ Delete
-                </button>
+
+            <!-- Dropdown menu -->
+            <div id="${dropdownId}" class="hidden z-10 bg-white border border-gray-200 rounded-lg shadow-lg w-56">
+                <ul class="py-1 text-sm text-gray-700" aria-labelledby="${dropdownId}-btn">
+                    <li>
+                        <button class="inline-flex items-center w-full px-3 py-2 text-sm hover:bg-gray-100 setDueDate" data-checklist-id="${task.id}">
+                            <svg class="w-4 h-4 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 10h16m-8-3V4M7 7V4m10 3V4M5 20h14a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1Z"/>
+                            </svg>
+                            Set due date
+                        </button>
+                    </li>
+                    <li>
+                        <button class="inline-flex items-center w-full px-3 py-2 text-sm hover:bg-gray-100 assignTask" data-checklist-id="${task.id}">
+                            <svg class="w-4 h-4 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 19h4a1 1 0 0 0 1-1v-1a3 3 0 0 0-3-3h-2m-2.236-4a3 3 0 1 0 0-4M3 18v-1a3 3 0 0 1 3-3h4a3 3 0 0 1 3 3v1a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1Zm8-10a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
+                            </svg>
+                            Assign member
+                        </button>
+                    </li>
+                    <li>
+                        <button class="inline-flex items-center w-full px-3 py-2 text-sm hover:bg-gray-100 convertToCard" data-checklist-id="${task.id}">
+                            <svg class="w-4 h-4 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h14a1 1 0 0 1 1 1v4h-3m0 0a3 3 0 1 0 0 6m0-6H6m0 16h12a2 2 0 0 0 2-2v-5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2Z"/>
+                            </svg>
+                            Convert to card
+                        </button>
+                    </li>
+                    <li class="border-t border-gray-200">
+                        <button class="inline-flex items-center w-full px-3 py-2 text-sm text-red-600 hover:bg-red-50 deleteTask" data-checklist-id="${task.id}">
+                            <svg class="w-4 h-4 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
+                            </svg>
+                            Delete
+                        </button>
+                    </li>
+                </ul>
             </div>
         </div>
     `;
@@ -1168,60 +1192,39 @@ function renderModalTasks() {
             renderAllCards();
         });
     });
-    
-    // Task menu button clicks
-    list.querySelectorAll('.taskMenuBtn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const checklistId = btn.dataset.checklistId;
-            const popup = btn.parentElement.querySelector('.taskMenuPopup');
-            
-            // Close all other popups
-            document.querySelectorAll('.taskMenuPopup').forEach(p => {
-                if (p !== popup) p.classList.add('hidden');
-            });
-            
-            popup.classList.toggle('hidden');
-        });
-    });
-    
-    // Close popups when clicking outside
-    document.addEventListener('click', () => {
-        document.querySelectorAll('.taskMenuPopup').forEach(p => p.classList.add('hidden'));
-    });
-    
+
     // Set due date
     list.querySelectorAll('.setDueDate').forEach(btn => {
         btn.addEventListener('click', async (e) => {
             e.stopPropagation();
             const checklistId = btn.dataset.checklistId;
             const dateStr = prompt('Enter due date (YYYY-MM-DD HH:MM) or leave empty to remove:');
-            
+
             if (dateStr !== null) {
                 const dueDate = dateStr.trim() ? new Date(dateStr).toISOString().slice(0, 16).replace('T', ' ') : null;
                 await apiCall('set_checklist_due_date', { id: checklistId, due_date: dueDate });
-                
+
                 // Update local state
                 const task = card.checklist.find(t => t.id == checklistId);
                 if (task) task.due_date = dueDate;
-                
+
                 renderModalTasks();
                 renderAllCards();
             }
         });
     });
-    
+
     // Assign member
     list.querySelectorAll('.assignTask').forEach(btn => {
         btn.addEventListener('click', async (e) => {
             e.stopPropagation();
             const checklistId = btn.dataset.checklistId;
             const assignedUser = prompt('Enter email (kloewer@gmail.com or amollik@gmail.com):');
-            
+
             if (assignedUser !== null) {
                 const email = assignedUser.trim() || null;
                 await apiCall('assign_checklist', { id: checklistId, assigned_user: email });
-                
+
                 // Update local state
                 const task = card.checklist.find(t => t.id == checklistId);
                 if (task) task.assigned_user = email;
@@ -1511,7 +1514,7 @@ function initKanban() {
 
 <!-- FOOTER - Version Info -->
 <footer class="max-w-7xl mx-auto px-6 py-4 text-right">
-    <span class="text-sm text-gray-400 font-sans" id="versionFooter">v1.0.47 (10.03.2026 - 14:00)</span>
+    <span class="text-sm text-gray-400 font-sans" id="versionFooter">v1.0.48 (10.03.2026 - 14:30)</span>
 </footer>
 
 </body>
