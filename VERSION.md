@@ -1,5 +1,11 @@
 # Version History
 
+## v1.0.49 (10.03.2026 - 15:00)
+- Fixed datepicker: using global Datepicker constructor instead of window.Datepicker
+- Fixed task dropdown menus: added custom dropdown toggle handlers after render
+- Dropdowns now properly open/close on button click
+- All dropdowns close when clicking outside
+
 ## v1.0.48 (10.03.2026 - 14:30)
 - Updated checklist checkbox styling to match Tailwind design system
 - Checkboxes: w-4 h-4, border, rounded, bg-gray-100, focus:ring-2 focus:ring-blue-500
