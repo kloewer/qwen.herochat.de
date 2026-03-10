@@ -1,5 +1,10 @@
 # Version History
 
+## v1.0.60 (10.03.2026 - 20:00)
+- Datepicker: Hide popup when scrolling modal to prevent misalignment
+- Added scroll event listener that closes datepicker on scroll
+- Cleaner UX: datepicker closes gracefully instead of misaligning
+
 ## v1.0.59 (10.03.2026 - 19:30)
 - Fixed datepicker scrolling issue by changing modal scroll behavior
 - Modal now scrolls as part of page overlay (not internal scrolling)
