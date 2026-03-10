@@ -74,7 +74,7 @@ try {
                 // Get assigned users
                 $stmt = $pdo->prepare("SELECT user_email FROM card_assignments WHERE card_id = ?");
                 $stmt->execute([$card['id']]);
-                $card['assigned_users'] = $stmt->fetchAll(PDO::COLUMN);
+                $card['assigned_users'] = $stmt->fetchAll(PDO::FETCH_COLUMN);
             }
 
             echo json_encode($cards);
