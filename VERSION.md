@@ -1,5 +1,11 @@
 # Version History
 
+## v1.0.47 (10.03.2026 - 14:00)
+- Replaced native datetime-local input with Flowbite datepicker
+- Datepicker features: calendar popup, autohide, date format (YYYY-MM-DD)
+- Added Flowbite library from CDN
+- Due date stored as DATETIME (midnight on selected date)
+
 ## v1.0.46 (10.03.2026 - 13:30)
 - Due date badge now updates correctly when cards are moved between columns
 - Cards moved to "Done" column immediately show green "Done" badge
