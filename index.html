@@ -597,11 +597,23 @@ function getDueDateBadge(dueDate, columnStatus) {
             Done
         </div>`;
     }
-    
+
     if (!dueDate) return '';
+
+    // Parse date string directly to avoid timezone issues
+    // Expected format: YYYY-MM-DD HH:MM:SS or YYYY-MM-DD
+    const dateParts = dueDate.split(' ')[0].split('-');
+    if (dateParts.length !== 3) return '';
     
+    const year = parseInt(dateParts[0]);
+    const month = parseInt(dateParts[1]) - 1; // Month is 0-indexed
+    const day = parseInt(dateParts[2]);
+    
+    const due = new Date(year, month, day);
     const now = new Date();
-    const due = new Date(dueDate);
+    now.setHours(0, 0, 0, 0); // Set to start of day for accurate comparison
+    due.setHours(0, 0, 0, 0);
+    
     const diffMs = due - now;
     const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
     
@@ -709,14 +721,16 @@ function initModal() {
         new Datepicker(datepickerInput, {
             autohide: true,
             format: 'yyyy-mm-dd',
+            weekStart: 1,
+            language: 'en',
             onSelect: (date) => {
                 // Set the hidden input to the selected date at midnight
                 if (date) {
-                    const d = new Date(date);
-                    const year = d.getFullYear();
-                    const month = String(d.getMonth() + 1).padStart(2, '0');
-                    const day = String(d.getDate()).padStart(2, '0');
-                    hiddenDueDate.value = `${year}-${month}-${day} 00:00:00`;
+                    // Parse the date string directly to avoid timezone issues
+                    const parts = date.split('-');
+                    if (parts.length === 3) {
+                        hiddenDueDate.value = `${parts[0]}-${parts[1]}-${parts[2]} 00:00:00`;
+                    }
                 } else {
                     hiddenDueDate.value = '';
                 }
@@ -792,12 +806,15 @@ function openModal(cardId) {
     const datepickerDisplay = document.getElementById('datepicker-autohide');
     const clearDueDateBtn = document.getElementById('clearDueDateBtn');
     if (card.due_date) {
-        // Convert to date format for datepicker (YYYY-MM-DD)
-        const dueDate = new Date(card.due_date);
-        const year = dueDate.getFullYear();
-        const month = String(dueDate.getMonth() + 1).padStart(2, '0');
-        const day = String(dueDate.getDate()).padStart(2, '0');
-        datepickerDisplay.value = `${year}-${month}-${day}`;
+        // Parse date string directly to avoid timezone issues
+        // Expected format: YYYY-MM-DD HH:MM:SS or YYYY-MM-DD
+        const dateParts = card.due_date.split(' ')[0].split('-');
+        if (dateParts.length === 3) {
+            const year = dateParts[0];
+            const month = dateParts[1];
+            const day = dateParts[2];
+            datepickerDisplay.value = `${year}-${month}-${day}`;
+        }
         dueDateInput.value = card.due_date;
         clearDueDateBtn.classList.remove('hidden');
     } else {
@@ -1577,7 +1594,7 @@ function initKanban() {
 
 <!-- FOOTER - Version Info -->
 <footer class="max-w-7xl mx-auto px-6 py-4 text-right">
-    <span class="text-sm text-gray-400 font-sans" id="versionFooter">v1.0.55 (10.03.2026 - 17:45)</span>
+    <span class="text-sm text-gray-400 font-sans" id="versionFooter">v1.0.56 (10.03.2026 - 18:00)</span>
 </footer>
 
 </body>

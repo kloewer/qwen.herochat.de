@@ -1,5 +1,12 @@
 # Version History
 
+## v1.0.56 (10.03.2026 - 18:00)
+- Fixed datepicker timezone/date format issues
+- Date parsing: Now splits date string directly (YYYY-MM-DD) instead of using Date constructor
+- Prevents timezone shifts (e.g., March 25 becoming March 22)
+- Due date badge calculation: Uses local time with explicit date parsing
+- All date comparisons now use start-of-day for accuracy
+
 ## v1.0.55 (10.03.2026 - 17:45)
 - Bugfix: Fixed PDO::COLUMN typo (should be PDO::FETCH_COLUMN)
 - This was causing API connection errors
