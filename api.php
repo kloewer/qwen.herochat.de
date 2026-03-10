@@ -49,7 +49,22 @@ try {
                 // Get checklists
                 $stmt = $pdo->prepare("SELECT id, task, is_done, position, due_date, assigned_user, linked_card_id, checked_at FROM checklists WHERE card_id = ? ORDER BY position");
                 $stmt->execute([$card['id']]);
-                $card['checklist'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $checklists = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                
+                // Clean up empty checklist items from database
+                $emptyChecklistIds = array_filter($checklists, function($t) {
+                    return empty($t['task']) || trim($t['task']) === '';
+                });
+                
+                if (!empty($emptyChecklistIds)) {
+                    $emptyIds = implode(',', array_column($emptyChecklistIds, 'id'));
+                    $pdo->exec("DELETE FROM checklists WHERE id IN ($emptyIds)");
+                    $checklists = array_filter($checklists, function($t) {
+                        return !empty($t['task']) && trim($t['task']) !== '';
+                    });
+                }
+                
+                $card['checklist'] = array_values($checklists);
 
                 // Get comments with user info
                 $stmt = $pdo->prepare("SELECT id, comment_text, user_email, created_at FROM comments WHERE card_id = ? ORDER BY created_at ASC");
@@ -59,7 +74,7 @@ try {
                 // Get assigned users
                 $stmt = $pdo->prepare("SELECT user_email FROM card_assignments WHERE card_id = ?");
                 $stmt->execute([$card['id']]);
-                $card['assigned_users'] = $stmt->fetchAll(PDO::FETCH_COLUMN);
+                $card['assigned_users'] = $stmt->fetchAll(PDO::COLUMN);
             }
 
             echo json_encode($cards);

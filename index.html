@@ -823,7 +823,29 @@ function openModal(cardId) {
 function closeModal() {
     const modal = document.getElementById('taskModal');
     modal.classList.add('hidden');
+    
+    // Clean up empty checklist items before closing
+    if (activeCardId) {
+        cleanupEmptyChecklistItems(activeCardId);
+    }
+    
     activeCardId = null;
+}
+
+async function cleanupEmptyChecklistItems(cardId) {
+    const card = cards.find(c => c.id == cardId);
+    if (!card) return;
+    
+    const emptyChecklistIds = card.checklist
+        .filter(t => !t.task || t.task.trim() === '')
+        .map(t => t.id);
+    
+    for (const checklistId of emptyChecklistIds) {
+        await apiCall('delete_checklist', { id: checklistId });
+    }
+    
+    // Remove from local state
+    card.checklist = card.checklist.filter(t => t.task && t.task.trim() !== '');
 }
 
 function formatDateTime(date) {
@@ -1555,7 +1577,7 @@ function initKanban() {
 
 <!-- FOOTER - Version Info -->
 <footer class="max-w-7xl mx-auto px-6 py-4 text-right">
-    <span class="text-sm text-gray-400 font-sans" id="versionFooter">v1.0.53 (10.03.2026 - 17:00)</span>
+    <span class="text-sm text-gray-400 font-sans" id="versionFooter">v1.0.54 (10.03.2026 - 17:30)</span>
 </footer>
 
 </body>

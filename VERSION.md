@@ -1,5 +1,11 @@
 # Version History
 
+## v1.0.54 (10.03.2026 - 17:30)
+- Auto-cleanup of empty checklist items (two-layer protection)
+- Layer 1: On modal close - deletes empty items via JavaScript before closing
+- Layer 2: On card load (API) - deletes empty items from database when fetching cards
+- Prevents accumulation of empty checklist items in database
+
 ## v1.0.53 (10.03.2026 - 17:00)
 - Made entire pipeline a droppable area for cards
 - Moved add-card-form inside kanban-list (at the bottom)
