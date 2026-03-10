@@ -1,5 +1,12 @@
 # Version History
 
+## v1.0.57 (10.03.2026 - 18:30)
+- Fixed datepicker using Flowbite's native datepicker-format attribute
+- Datepicker now uses `datepicker-format="yyyy-mm-dd"` for correct format
+- Simplified date handling: reads directly from datepicker input on save
+- Date stored as `YYYY-MM-DD 00:00:00` (midnight, no time selection needed)
+- Change event listener updates hidden field when date is selected
+
 ## v1.0.56 (10.03.2026 - 18:00)
 - Fixed datepicker timezone/date format issues
 - Date parsing: Now splits date string directly (YYYY-MM-DD) instead of using Date constructor
