@@ -1,5 +1,11 @@
 # Version History
 
+## v1.0.53 (10.03.2026 - 17:00)
+- Made entire pipeline a droppable area for cards
+- Moved add-card-form inside kanban-list (at the bottom)
+- Added filter to prevent add-card-form from being draggable
+- Cards can now be dropped anywhere in the pipeline
+
 ## v1.0.52 (10.03.2026 - 16:30)
 - Enabled card reordering within and between columns
 - Cards can now be dropped at any position and maintain order
