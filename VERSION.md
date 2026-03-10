@@ -1,5 +1,14 @@
 # Version History
 
+## v1.0.52 (10.03.2026 - 16:30)
+- Enabled card reordering within and between columns
+- Cards can now be dropped at any position and maintain order
+- API updated with proper position shifting logic
+- Same column: shifts cards between old and new positions
+- Different column: removes gap in old column, makes room in new column
+- Frontend reloads cards after move to get updated positions
+- renderAllCards now sorts cards by position before rendering
+
 ## v1.0.51 (10.03.2026 - 16:00)
 - Updated three-dot menu icon: vertical dots (w-6 h-6), more visible
 - Icon: stroke-based vertical dots instead of filled horizontal dots

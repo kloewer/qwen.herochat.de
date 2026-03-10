@@ -111,8 +111,50 @@ try {
 
         case 'move_card':
             $data = json_decode(file_get_contents('php://input'), true);
+            
+            // Get current card data
+            $stmt = $pdo->prepare("SELECT * FROM cards WHERE id = ?");
+            $stmt->execute([$data['id']]);
+            $currentCard = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if (!$currentCard) {
+                echo json_encode(['error' => 'Card not found']);
+                break;
+            }
+            
+            $oldColumn = $currentCard['column_status'];
+            $newColumn = $data['column_status'];
+            $newPosition = (int)$data['position'];
+            $cardId = (int)$data['id'];
+            
+            // Update the moved card
             $stmt = $pdo->prepare("UPDATE cards SET column_status = ?, position = ?, due_date = ? WHERE id = ?");
-            $stmt->execute([$data['column_status'], $data['position'], $data['due_date'] ?? null, $data['id']]);
+            $stmt->execute([$newColumn, $newPosition, $data['due_date'] ?? null, $cardId]);
+            
+            // If column changed, shift positions in both columns
+            if ($oldColumn !== $newColumn) {
+                // Remove gap in old column
+                $stmt = $pdo->prepare("UPDATE cards SET position = position - 1 WHERE column_status = ? AND position > ?");
+                $stmt->execute([$oldColumn, $currentCard['position']]);
+                
+                // Make room in new column
+                $stmt = $pdo->prepare("UPDATE cards SET position = position + 1 WHERE column_status = ? AND position >= ? AND id != ?");
+                $stmt->execute([$newColumn, $newPosition, $cardId]);
+            } else {
+                // Same column - adjust positions based on movement direction
+                $oldPosition = (int)$currentCard['position'];
+                
+                if ($newPosition > $oldPosition) {
+                    // Moved down - shift cards between old and new position up
+                    $stmt = $pdo->prepare("UPDATE cards SET position = position - 1 WHERE column_status = ? AND position > ? AND position <= ? AND id != ?");
+                    $stmt->execute([$newColumn, $oldPosition, $newPosition, $cardId]);
+                } else if ($newPosition < $oldPosition) {
+                    // Moved up - shift cards between new and old position down
+                    $stmt = $pdo->prepare("UPDATE cards SET position = position + 1 WHERE column_status = ? AND position >= ? AND position < ? AND id != ?");
+                    $stmt->execute([$newColumn, $newPosition, $oldPosition, $cardId]);
+                }
+            }
+            
             echo json_encode(['success' => true]);
             break;
 

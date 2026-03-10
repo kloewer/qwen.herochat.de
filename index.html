@@ -447,8 +447,16 @@ function renderAllCards() {
     document.getElementById('todo-list').innerHTML = '';
     document.getElementById('in_progress-list').innerHTML = '';
     document.getElementById('done-list').innerHTML = '';
-    
-    cards.forEach(card => renderCard(card));
+
+    // Sort cards by position within each column
+    const sortedCards = [...cards].sort((a, b) => {
+        if (a.column_status === b.column_status) {
+            return a.position - b.position;
+        }
+        return 0;
+    });
+
+    sortedCards.forEach(card => renderCard(card));
 }
 
 function renderCard(card) {
@@ -1511,7 +1519,10 @@ function initKanban() {
                 const cardEl = evt.item;
                 const cardId = cardEl.dataset.cardId;
                 const newColumn = evt.to.closest('[data-column]').dataset.column;
-                const newPosition = Array.from(evt.to.children).indexOf(cardEl);
+                
+                // Get only card elements (not add-card-form) to calculate position
+                const cardElements = Array.from(evt.to.children).filter(el => el.classList.contains('kanban-card'));
+                const newPosition = cardElements.indexOf(cardEl);
 
                 const card = cards.find(c => c.id == cardId);
                 if (!card) return;
@@ -1520,7 +1531,7 @@ function initKanban() {
                 card.column_status = newColumn;
                 card.position = newPosition;
 
-                // Send to server
+                // Send to server (API handles position reordering)
                 await apiCall('move_card', {
                     id: cardId,
                     column_status: newColumn,
@@ -1528,8 +1539,8 @@ function initKanban() {
                     due_date: card.due_date || null
                 });
 
-                // Re-render all cards to update due date badges based on new column status
-                renderAllCards();
+                // Reload cards to get updated positions from database
+                await loadCards();
             }
         });
     });
@@ -1542,7 +1553,7 @@ function initKanban() {
 
 <!-- FOOTER - Version Info -->
 <footer class="max-w-7xl mx-auto px-6 py-4 text-right">
-    <span class="text-sm text-gray-400 font-sans" id="versionFooter">v1.0.51 (10.03.2026 - 16:00)</span>
+    <span class="text-sm text-gray-400 font-sans" id="versionFooter">v1.0.52 (10.03.2026 - 16:30)</span>
 </footer>
 
 </body>
