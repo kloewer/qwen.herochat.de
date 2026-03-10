@@ -1050,10 +1050,10 @@ function renderModalTasks() {
         const hasAssignee = task.assigned_user;
         const hasLink = task.linked_card_id;
         const dueDateStr = task.due_date ? new Date(task.due_date).toLocaleString('de-DE', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) : '';
-        const dropdownId = `task-dropdown-${task.id}`;
+        const dropdownId = `task-dropdown-${task.id}-${Date.now()}`;
 
         return `
-        <div class="group flex items-center gap-3 p-2 rounded-lg ${task.is_done ? 'bg-gray-50' : 'hover:bg-gray-50'}" data-checklist-id="${task.id}">
+        <div class="group flex items-center gap-3 p-2 rounded-lg ${task.is_done ? 'bg-gray-50' : 'hover:bg-gray-50'} relative" data-checklist-id="${task.id}">
             <div class="flex items-center h-5">
                 <input type="checkbox"
                        data-checklist-id="${task.id}"
@@ -1073,15 +1073,15 @@ function renderModalTasks() {
             </div>
 
             <!-- Action menu button -->
-            <button id="${dropdownId}-btn" data-dropdown-toggle="${dropdownId}" class="taskMenuBtn text-gray-400 opacity-0 group-hover:opacity-100 hover:text-gray-600 transition-opacity p-1" data-checklist-id="${task.id}" type="button">
+            <button id="${dropdownId}-btn" data-dropdown-id="${dropdownId}" class="taskMenuBtn text-gray-400 opacity-0 group-hover:opacity-100 hover:text-gray-600 transition-opacity p-1" data-checklist-id="${task.id}" type="button">
                 <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 12h.01m6 0h.01m6 0h.01"/>
                 </svg>
             </button>
 
-            <!-- Dropdown menu -->
-            <div id="${dropdownId}" class="hidden z-10 bg-white border border-gray-200 rounded-lg shadow-lg w-56">
-                <ul class="py-1 text-sm text-gray-700" aria-labelledby="${dropdownId}-btn">
+            <!-- Dropdown menu (absolute positioned) -->
+            <div id="${dropdownId}" class="hidden absolute right-0 top-8 z-50 bg-white border border-gray-200 rounded-lg shadow-lg w-56" style="position: absolute;">
+                <ul class="py-1 text-sm text-gray-700">
                     <li>
                         <button class="inline-flex items-center w-full px-3 py-2 text-sm hover:bg-gray-100 setDueDate" data-checklist-id="${task.id}">
                             <svg class="w-4 h-4 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
@@ -1120,29 +1120,31 @@ function renderModalTasks() {
     `;
     }).join('');
 
-    // Initialize Flowbite dropdowns for task menus
-    list.querySelectorAll('[data-dropdown-toggle]').forEach(btn => {
-        const dropdownId = btn.getAttribute('data-dropdown-toggle');
-        const dropdown = document.getElementById(dropdownId);
-        
-        if (dropdown) {
-            btn.addEventListener('click', (e) => {
-                e.stopPropagation();
+    // Initialize dropdowns for task menus
+    list.querySelectorAll('[data-dropdown-id]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const dropdownId = btn.getAttribute('data-dropdown-id');
+            const dropdown = document.getElementById(dropdownId);
+            
+            if (dropdown) {
                 // Close all other dropdowns
                 document.querySelectorAll('[id^="task-dropdown-"]').forEach(d => {
                     if (d.id !== dropdownId) d.classList.add('hidden');
                 });
                 // Toggle this dropdown
                 dropdown.classList.toggle('hidden');
-            });
-        }
+            }
+        });
     });
 
     // Close dropdowns when clicking outside
-    document.addEventListener('click', () => {
-        document.querySelectorAll('[id^="task-dropdown-"]').forEach(d => {
-            d.classList.add('hidden');
-        });
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('[data-dropdown-id]')) {
+            document.querySelectorAll('[id^="task-dropdown-"]').forEach(d => {
+                d.classList.add('hidden');
+            });
+        }
     });
 
     // Attach listeners
@@ -1539,7 +1541,7 @@ function initKanban() {
 
 <!-- FOOTER - Version Info -->
 <footer class="max-w-7xl mx-auto px-6 py-4 text-right">
-    <span class="text-sm text-gray-400 font-sans" id="versionFooter">v1.0.49 (10.03.2026 - 15:00)</span>
+    <span class="text-sm text-gray-400 font-sans" id="versionFooter">v1.0.50 (10.03.2026 - 15:30)</span>
 </footer>
 
 </body>

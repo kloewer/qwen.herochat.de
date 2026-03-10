@@ -1,5 +1,12 @@
 # Version History
 
+## v1.0.50 (10.03.2026 - 15:30)
+- Fixed dropdown positioning: absolute positioned, no longer expands checkbox item
+- Dropdown menu: right-0 top-8 z-50, floats above content
+- Fixed dropdown ID conflicts: using unique IDs with timestamp (task.id + Date.now())
+- Changed from data-dropdown-toggle to data-dropdown-id attribute
+- Close dropdowns when clicking outside (with event target check)
+
 ## v1.0.49 (10.03.2026 - 15:00)
 - Fixed datepicker: using global Datepicker constructor instead of window.Datepicker
 - Fixed task dropdown menus: added custom dropdown toggle handlers after render
