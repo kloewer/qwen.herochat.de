@@ -1,5 +1,11 @@
 # Version History
 
+## v1.0.44 (10.03.2026 - 12:30)
+- Due date badge aligned with members on same line (bottom of card)
+- New color coding: <7 days = red, 7-14 days = orange, 14-30 days = gray, >30 days = date (gray)
+- Removed icons from badges for cleaner look
+- Due date badge positioned in lower right corner
+
 ## v1.0.43 (10.03.2026 - 12:00)
 - Added due date feature to cards
 - Due date displayed on card front with color-coded badge (red = overdue, orange = within 7 days, gray = later)

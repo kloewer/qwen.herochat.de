@@ -450,10 +450,6 @@ function renderCard(card) {
     const totalCount = card.checklist.length;
     const percent = totalCount ? (doneCount / totalCount) * 100 : 0;
     const assignedUsers = card.assigned_users || [];
-    
-    // Due date logic
-    const hasDueDate = card.due_date && new Date(card.due_date) > new Date();
-    const isOverdue = card.due_date && new Date(card.due_date) < new Date();
     const dueDateBadge = getDueDateBadge(card.due_date);
 
     const cardEl = document.createElement('div');
@@ -468,8 +464,6 @@ function renderCard(card) {
         </div>
 
         ${card.description ? `<p class="text-sm text-gray-500 mt-1">${escapeHtml(card.description)}</p>` : ''}
-        
-        ${dueDateBadge}
 
         ${card.checklist.length > 0 ? `
         <div class="taskSection mt-4">
@@ -494,18 +488,19 @@ function renderCard(card) {
         </div>
         ` : ''}
 
-        ${assignedUsers.length > 0 ? `
+        ${assignedUsers.length > 0 || dueDateBadge ? `
         <div class="membersSection mt-4 flex items-center justify-between">
             <div class="flex -space-x-2">
                 ${assignedUsers.map(email => {
                     const displayName = email === 'kloewer@gmail.com' ? 'Christian' : (email === 'amollik@gmail.com' ? 'Alvar' : email);
-                    return `<img src="/user/${encodeURIComponent(email)}.png" 
-                                 alt="${displayName}" 
+                    return `<img src="/user/${encodeURIComponent(email)}.png"
+                                 alt="${displayName}"
                                  class="w-7 h-7 rounded-full border-2 border-white object-cover"
                                  title="${displayName}"
                                  onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22%236B7280%22><path d=%22M12 12a5 5 0 100-10 5 5 0 000 10zm0 2c-3.33 0-10 1.67-10 5v1h20v-1c0-3.33-6.67-5-10-5z%22/></svg>'">`;
                 }).join('')}
             </div>
+            ${dueDateBadge}
         </div>
         ` : ''}
     `;
@@ -585,53 +580,45 @@ function getDueDateBadge(dueDate) {
     const diffMs = due - now;
     const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
     
-    // Past due date
+    // Past due date - red
     if (diffDays < 0) {
         const absDays = Math.abs(diffDays);
-        return `<div class="dueDateBadge mt-3 inline-flex items-center gap-1 bg-red-100 text-red-700 px-2.5 py-1.5 rounded-lg text-xs font-medium">
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
-            ${absDays} day${absDays > 1 ? 's' : ''} overdue
+        return `<div class="dueDateBadge inline-flex items-center gap-1 bg-red-100 text-red-700 px-2.5 py-1.5 rounded-lg text-xs font-medium">
+            ${absDays} day${absDays > 1 ? 's' : ''} left
         </div>`;
     }
     
-    // Today
+    // Due today - green
     if (diffDays === 0) {
-        return `<div class="dueDateBadge mt-3 inline-flex items-center gap-1 bg-orange-100 text-orange-700 px-2.5 py-1.5 rounded-lg text-xs font-medium">
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
+        return `<div class="dueDateBadge inline-flex items-center gap-1 bg-green-100 text-green-700 px-2.5 py-1.5 rounded-lg text-xs font-medium">
             Today
         </div>`;
     }
     
-    // Tomorrow
-    if (diffDays === 1) {
-        return `<div class="dueDateBadge mt-3 inline-flex items-center gap-1 bg-orange-100 text-orange-700 px-2.5 py-1.5 rounded-lg text-xs font-medium">
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
-            Tomorrow
-        </div>`;
-    }
-    
-    // Within a week - show days left
-    if (diffDays <= 7) {
-        return `<div class="dueDateBadge mt-3 inline-flex items-center gap-1 bg-orange-100 text-orange-700 px-2.5 py-1.5 rounded-lg text-xs font-medium">
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-            </svg>
+    // Less than 7 days - red
+    if (diffDays < 7) {
+        return `<div class="dueDateBadge inline-flex items-center gap-1 bg-red-100 text-red-700 px-2.5 py-1.5 rounded-lg text-xs font-medium">
             ${diffDays} day${diffDays > 1 ? 's' : ''} left
         </div>`;
     }
     
-    // More than a week - show date
+    // 7 to 14 days - orange
+    if (diffDays < 14) {
+        return `<div class="dueDateBadge inline-flex items-center gap-1 bg-orange-100 text-orange-700 px-2.5 py-1.5 rounded-lg text-xs font-medium">
+            ${diffDays} day${diffDays > 1 ? 's' : ''} left
+        </div>`;
+    }
+    
+    // 14 to 30 days - gray
+    if (diffDays < 30) {
+        return `<div class="dueDateBadge inline-flex items-center gap-1 bg-gray-100 text-gray-600 px-2.5 py-1.5 rounded-lg text-xs font-medium">
+            ${diffDays} day${diffDays > 1 ? 's' : ''} left
+        </div>`;
+    }
+    
+    // More than 30 days - show date, gray
     const dateStr = due.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-    return `<div class="dueDateBadge mt-3 inline-flex items-center gap-1 bg-gray-100 text-gray-600 px-2.5 py-1.5 rounded-lg text-xs font-medium">
-        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-        </svg>
+    return `<div class="dueDateBadge inline-flex items-center gap-1 bg-gray-100 text-gray-600 px-2.5 py-1.5 rounded-lg text-xs font-medium">
         ${dateStr}
     </div>`;
 }
@@ -1479,7 +1466,7 @@ function initKanban() {
 
 <!-- FOOTER - Version Info -->
 <footer class="max-w-7xl mx-auto px-6 py-4 text-right">
-    <span class="text-sm text-gray-400 font-sans" id="versionFooter">v1.0.43 (10.03.2026 - 12:00)</span>
+    <span class="text-sm text-gray-400 font-sans" id="versionFooter">v1.0.44 (10.03.2026 - 12:30)</span>
 </footer>
 
 </body>
