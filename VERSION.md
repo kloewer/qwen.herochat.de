@@ -1,5 +1,10 @@
 # Version History
 
+## v1.0.58 (10.03.2026 - 19:00)
+- Fixed datepicker scrolling with page instead of modal
+- Datepicker popup now appended to modal container (`container: modal`)
+- Datepicker stays positioned correctly when scrolling modal content
+
 ## v1.0.57 (10.03.2026 - 18:30)
 - Fixed datepicker using Flowbite's native datepicker-format attribute
 - Datepicker now uses `datepicker-format="yyyy-mm-dd"` for correct format

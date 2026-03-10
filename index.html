@@ -728,6 +728,16 @@ function initModal() {
                 hiddenDueDate.value = '';
             }
         });
+        
+        // Configure datepicker to append to modal container
+        const modal = document.getElementById('taskModal');
+        if (modal) {
+            const datepickerInstance = new Datepicker(datepickerInput, {
+                autohide: true,
+                container: modal,
+                placement: 'bottom',
+            });
+        }
     }
 
     // Expandable comment input
@@ -1591,7 +1601,7 @@ function initKanban() {
 
 <!-- FOOTER - Version Info -->
 <footer class="max-w-7xl mx-auto px-6 py-4 text-right">
-    <span class="text-sm text-gray-400 font-sans" id="versionFooter">v1.0.57 (10.03.2026 - 18:30)</span>
+    <span class="text-sm text-gray-400 font-sans" id="versionFooter">v1.0.58 (10.03.2026 - 19:00)</span>
 </footer>
 
 </body>
