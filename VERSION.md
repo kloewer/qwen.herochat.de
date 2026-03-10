@@ -1,5 +1,12 @@
 # Version History
 
+## v1.0.51 (10.03.2026 - 16:00)
+- Updated three-dot menu icon: vertical dots (w-6 h-6), more visible
+- Icon: stroke-based vertical dots instead of filled horizontal dots
+- Fixed script breaking: added e.preventDefault() to dropdown click handler
+- Global click handler for closing dropdowns moved to initModal (added only once)
+- Removed duplicate click handler from renderModalTasks
+
 ## v1.0.50 (10.03.2026 - 15:30)
 - Fixed dropdown positioning: absolute positioned, no longer expands checkbox item
 - Dropdown menu: right-0 top-8 z-50, floats above content

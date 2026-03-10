@@ -684,6 +684,15 @@ function initModal() {
         document.getElementById('modalCardDueDate').value = '';
     });
 
+    // Global click handler to close dropdowns
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('[data-dropdown-id]')) {
+            document.querySelectorAll('[id^="task-dropdown-"]').forEach(d => {
+                d.classList.add('hidden');
+            });
+        }
+    });
+
     // Initialize Flowbite datepicker
     const datepickerInput = document.getElementById('datepicker-autohide');
     const hiddenDueDate = document.getElementById('modalCardDueDate');
@@ -1073,9 +1082,9 @@ function renderModalTasks() {
             </div>
 
             <!-- Action menu button -->
-            <button id="${dropdownId}-btn" data-dropdown-id="${dropdownId}" class="taskMenuBtn text-gray-400 opacity-0 group-hover:opacity-100 hover:text-gray-600 transition-opacity p-1" data-checklist-id="${task.id}" type="button">
-                <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 12h.01m6 0h.01m6 0h.01"/>
+            <button id="${dropdownId}-btn" data-dropdown-id="${dropdownId}" class="taskMenuBtn text-gray-400 opacity-0 group-hover:opacity-100 hover:text-gray-800 transition-opacity p-1" data-checklist-id="${task.id}" type="button">
+                <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M12 6h.01M12 12h.01M12 18h.01"/>
                 </svg>
             </button>
 
@@ -1124,9 +1133,10 @@ function renderModalTasks() {
     list.querySelectorAll('[data-dropdown-id]').forEach(btn => {
         btn.addEventListener('click', (e) => {
             e.stopPropagation();
+            e.preventDefault();
             const dropdownId = btn.getAttribute('data-dropdown-id');
             const dropdown = document.getElementById(dropdownId);
-            
+
             if (dropdown) {
                 // Close all other dropdowns
                 document.querySelectorAll('[id^="task-dropdown-"]').forEach(d => {
@@ -1136,15 +1146,6 @@ function renderModalTasks() {
                 dropdown.classList.toggle('hidden');
             }
         });
-    });
-
-    // Close dropdowns when clicking outside
-    document.addEventListener('click', (e) => {
-        if (!e.target.closest('[data-dropdown-id]')) {
-            document.querySelectorAll('[id^="task-dropdown-"]').forEach(d => {
-                d.classList.add('hidden');
-            });
-        }
     });
 
     // Attach listeners
@@ -1541,7 +1542,7 @@ function initKanban() {
 
 <!-- FOOTER - Version Info -->
 <footer class="max-w-7xl mx-auto px-6 py-4 text-right">
-    <span class="text-sm text-gray-400 font-sans" id="versionFooter">v1.0.50 (10.03.2026 - 15:30)</span>
+    <span class="text-sm text-gray-400 font-sans" id="versionFooter">v1.0.51 (10.03.2026 - 16:00)</span>
 </footer>
 
 </body>
