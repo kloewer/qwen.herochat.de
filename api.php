@@ -67,9 +67,9 @@ try {
 
         case 'create_card':
             $data = json_decode(file_get_contents('php://input'), true);
-            $stmt = $pdo->prepare("INSERT INTO cards (title, description, column_status, position, created_by) VALUES (?, ?, ?, ?, ?)");
-            $stmt->execute([$data['title'], $data['description'] ?? '', $data['column_status'] ?? 'todo', $data['position'] ?? 0, $userEmail]);
-            
+            $stmt = $pdo->prepare("INSERT INTO cards (title, description, column_status, position, due_date, created_by) VALUES (?, ?, ?, ?, ?, ?)");
+            $stmt->execute([$data['title'], $data['description'] ?? '', $data['column_status'] ?? 'todo', $data['position'] ?? 0, $data['due_date'] ?? null, $userEmail]);
+
             // Assign users if provided
             if (!empty($data['assigned_users']) && is_array($data['assigned_users'])) {
                 foreach ($data['assigned_users'] as $assignedEmail) {
@@ -77,14 +77,14 @@ try {
                     $stmt->execute([$pdo->lastInsertId(), $assignedEmail]);
                 }
             }
-            
+
             echo json_encode(['id' => $pdo->lastInsertId(), 'success' => true]);
             break;
 
         case 'update_card':
             $data = json_decode(file_get_contents('php://input'), true);
-            $stmt = $pdo->prepare("UPDATE cards SET title = ?, description = ?, column_status = ?, position = ? WHERE id = ?");
-            $stmt->execute([$data['title'], $data['description'], $data['column_status'], $data['position'], $data['id']]);
+            $stmt = $pdo->prepare("UPDATE cards SET title = ?, description = ?, column_status = ?, position = ?, due_date = ? WHERE id = ?");
+            $stmt->execute([$data['title'], $data['description'], $data['column_status'], $data['position'], $data['due_date'] ?? null, $data['id']]);
             
             // Update assigned users
             if (isset($data['assigned_users']) && is_array($data['assigned_users'])) {
@@ -111,8 +111,8 @@ try {
 
         case 'move_card':
             $data = json_decode(file_get_contents('php://input'), true);
-            $stmt = $pdo->prepare("UPDATE cards SET column_status = ?, position = ? WHERE id = ?");
-            $stmt->execute([$data['column_status'], $data['position'], $data['id']]);
+            $stmt = $pdo->prepare("UPDATE cards SET column_status = ?, position = ?, due_date = ? WHERE id = ?");
+            $stmt->execute([$data['column_status'], $data['position'], $data['due_date'] ?? null, $data['id']]);
             echo json_encode(['success' => true]);
             break;
 

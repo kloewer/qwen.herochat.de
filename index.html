@@ -265,6 +265,21 @@ MODAL
             <!-- RIGHT SIDEBAR - Activity -->
             <div class="md:col-span-1 bg-gray-50 flex flex-col">
 
+                <!-- Due Date Picker -->
+                <div class="p-4 border-b bg-white">
+                    <div class="flex items-center gap-2 mb-2 text-gray-700">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                        <h3 class="font-semibold text-sm">Due Date</h3>
+                    </div>
+                    <input type="datetime-local" id="modalCardDueDate"
+                           class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <button id="clearDueDateBtn" class="mt-2 text-xs text-red-600 hover:text-red-700 hidden">
+                        Remove due date
+                    </button>
+                </div>
+
                 <!-- Comment Input (TOP) -->
                 <div class="p-4 border-b bg-white">
                     <div class="relative">
@@ -435,6 +450,11 @@ function renderCard(card) {
     const totalCount = card.checklist.length;
     const percent = totalCount ? (doneCount / totalCount) * 100 : 0;
     const assignedUsers = card.assigned_users || [];
+    
+    // Due date logic
+    const hasDueDate = card.due_date && new Date(card.due_date) > new Date();
+    const isOverdue = card.due_date && new Date(card.due_date) < new Date();
+    const dueDateBadge = getDueDateBadge(card.due_date);
 
     const cardEl = document.createElement('div');
     cardEl.className = 'kanban-card bg-white p-4 rounded-lg shadow';
@@ -448,6 +468,8 @@ function renderCard(card) {
         </div>
 
         ${card.description ? `<p class="text-sm text-gray-500 mt-1">${escapeHtml(card.description)}</p>` : ''}
+        
+        ${dueDateBadge}
 
         ${card.checklist.length > 0 ? `
         <div class="taskSection mt-4">
@@ -555,6 +577,65 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
+function getDueDateBadge(dueDate) {
+    if (!dueDate) return '';
+    
+    const now = new Date();
+    const due = new Date(dueDate);
+    const diffMs = due - now;
+    const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+    
+    // Past due date
+    if (diffDays < 0) {
+        const absDays = Math.abs(diffDays);
+        return `<div class="dueDateBadge mt-3 inline-flex items-center gap-1 bg-red-100 text-red-700 px-2.5 py-1.5 rounded-lg text-xs font-medium">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            ${absDays} day${absDays > 1 ? 's' : ''} overdue
+        </div>`;
+    }
+    
+    // Today
+    if (diffDays === 0) {
+        return `<div class="dueDateBadge mt-3 inline-flex items-center gap-1 bg-orange-100 text-orange-700 px-2.5 py-1.5 rounded-lg text-xs font-medium">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            Today
+        </div>`;
+    }
+    
+    // Tomorrow
+    if (diffDays === 1) {
+        return `<div class="dueDateBadge mt-3 inline-flex items-center gap-1 bg-orange-100 text-orange-700 px-2.5 py-1.5 rounded-lg text-xs font-medium">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            Tomorrow
+        </div>`;
+    }
+    
+    // Within a week - show days left
+    if (diffDays <= 7) {
+        return `<div class="dueDateBadge mt-3 inline-flex items-center gap-1 bg-orange-100 text-orange-700 px-2.5 py-1.5 rounded-lg text-xs font-medium">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+            </svg>
+            ${diffDays} day${diffDays > 1 ? 's' : ''} left
+        </div>`;
+    }
+    
+    // More than a week - show date
+    const dateStr = due.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    return `<div class="dueDateBadge mt-3 inline-flex items-center gap-1 bg-gray-100 text-gray-600 px-2.5 py-1.5 rounded-lg text-xs font-medium">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+        </svg>
+        ${dateStr}
+    </div>`;
+}
+
 
 /* =========================================================
 MODAL
@@ -592,6 +673,11 @@ function initModal() {
     deleteBtn.addEventListener('click', deleteCard);
     addTaskBtn.addEventListener('click', addTask);
     postCommentBtn.addEventListener('click', postComment);
+    
+    // Due date clear button
+    document.getElementById('clearDueDateBtn').addEventListener('click', () => {
+        document.getElementById('modalCardDueDate').value = '';
+    });
 
     // Expandable comment input
     const commentInput = document.getElementById('commentInput');
@@ -655,6 +741,24 @@ function openModal(cardId) {
     document.getElementById('modalCardTitle').value = card.title;
     document.getElementById('modalCardDescription').value = card.description || '';
     document.getElementById('modalCardStatus').value = card.column_status;
+    
+    // Set due date
+    const dueDateInput = document.getElementById('modalCardDueDate');
+    const clearDueDateBtn = document.getElementById('clearDueDateBtn');
+    if (card.due_date) {
+        // Convert to datetime-local format (YYYY-MM-DDTHH:MM)
+        const dueDate = new Date(card.due_date);
+        const year = dueDate.getFullYear();
+        const month = String(dueDate.getMonth() + 1).padStart(2, '0');
+        const day = String(dueDate.getDate()).padStart(2, '0');
+        const hours = String(dueDate.getHours()).padStart(2, '0');
+        const minutes = String(dueDate.getMinutes()).padStart(2, '0');
+        dueDateInput.value = `${year}-${month}-${day}T${hours}:${minutes}`;
+        clearDueDateBtn.classList.remove('hidden');
+    } else {
+        dueDateInput.value = '';
+        clearDueDateBtn.classList.add('hidden');
+    }
 
     renderModalTasks();
     renderActivityFeed(card);
@@ -1130,6 +1234,7 @@ async function saveCard() {
     const title = document.getElementById('modalCardTitle').value;
     const description = document.getElementById('modalCardDescription').value;
     const column_status = document.getElementById('modalCardStatus').value;
+    const due_date = document.getElementById('modalCardDueDate').value || null;
 
     const card = cards.find(c => c.id == activeCardId);
     if (!card) return;
@@ -1140,6 +1245,7 @@ async function saveCard() {
         description,
         column_status,
         position: card.position,
+        due_date,
         assigned_users: card.assigned_users || []
     });
 
@@ -1147,6 +1253,7 @@ async function saveCard() {
     card.title = title;
     card.description = description;
     card.column_status = column_status;
+    card.due_date = due_date;
 
     closeModal();
     renderAllCards();
@@ -1345,10 +1452,10 @@ function initKanban() {
                 const cardId = cardEl.dataset.cardId;
                 const newColumn = evt.to.closest('[data-column]').dataset.column;
                 const newPosition = Array.from(evt.to.children).indexOf(cardEl);
-                
+
                 const card = cards.find(c => c.id == cardId);
                 if (!card) return;
-                
+
                 // Update local state
                 card.column_status = newColumn;
                 card.position = newPosition;
@@ -1357,7 +1464,8 @@ function initKanban() {
                 await apiCall('move_card', {
                     id: cardId,
                     column_status: newColumn,
-                    position: newPosition
+                    position: newPosition,
+                    due_date: card.due_date || null
                 });
             }
         });
@@ -1371,7 +1479,7 @@ function initKanban() {
 
 <!-- FOOTER - Version Info -->
 <footer class="max-w-7xl mx-auto px-6 py-4 text-right">
-    <span class="text-sm text-gray-400 font-sans" id="versionFooter">v1.0.42 (09.03.2026 - 03:00)</span>
+    <span class="text-sm text-gray-400 font-sans" id="versionFooter">v1.0.43 (10.03.2026 - 12:00)</span>
 </footer>
 
 </body>

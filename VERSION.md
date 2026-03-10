@@ -1,5 +1,14 @@
 # Version History
 
+## v1.0.43 (10.03.2026 - 12:00)
+- Added due date feature to cards
+- Due date displayed on card front with color-coded badge (red = overdue, orange = within 7 days, gray = later)
+- Date picker in modal using native datetime-local input
+- "Remove due date" button to clear due date
+- Badge shows: "X days left", "Today", "Tomorrow", "X days overdue", or date
+- Database schema updated with due_date column in cards table
+- API updated to handle due_date on create, update, and move operations
+
 ## v1.0.42 (09.03.2026 - 03:00)
 - Activity feed: All timestamps in GREY (not blue)
 - Consistent layout: Name → Content → Timestamp (all on separate lines)
