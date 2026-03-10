@@ -1461,6 +1461,9 @@ function initKanban() {
                     position: newPosition,
                     due_date: card.due_date || null
                 });
+
+                // Re-render all cards to update due date badges based on new column status
+                renderAllCards();
             }
         });
     });
@@ -1473,7 +1476,7 @@ function initKanban() {
 
 <!-- FOOTER - Version Info -->
 <footer class="max-w-7xl mx-auto px-6 py-4 text-right">
-    <span class="text-sm text-gray-400 font-sans" id="versionFooter">v1.0.45 (10.03.2026 - 13:00)</span>
+    <span class="text-sm text-gray-400 font-sans" id="versionFooter">v1.0.46 (10.03.2026 - 13:30)</span>
 </footer>
 
 </body>

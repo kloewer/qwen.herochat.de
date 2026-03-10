@@ -1,5 +1,11 @@
 # Version History
 
+## v1.0.46 (10.03.2026 - 13:30)
+- Due date badge now updates correctly when cards are moved between columns
+- Cards moved to "Done" column immediately show green "Done" badge
+- Cards moved back from "Done" show their actual due date status
+- Re-render triggered after drag-and-drop move operation
+
 ## v1.0.45 (10.03.2026 - 13:00)
 - Fixed overdue cards: now shows "X days overdue" instead of "X days left"
 - Cards in "Done" column always show green "Done" badge
