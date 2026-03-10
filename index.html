@@ -450,7 +450,7 @@ function renderCard(card) {
     const totalCount = card.checklist.length;
     const percent = totalCount ? (doneCount / totalCount) * 100 : 0;
     const assignedUsers = card.assigned_users || [];
-    const dueDateBadge = getDueDateBadge(card.due_date);
+    const dueDateBadge = getDueDateBadge(card.due_date, card.column_status);
 
     const cardEl = document.createElement('div');
     cardEl.className = 'kanban-card bg-white p-4 rounded-lg shadow';
@@ -572,7 +572,14 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
-function getDueDateBadge(dueDate) {
+function getDueDateBadge(dueDate, columnStatus) {
+    // Cards in Done column always show green "Done" badge
+    if (columnStatus === 'done') {
+        return `<div class="dueDateBadge inline-flex items-center gap-1 bg-green-100 text-green-700 px-2.5 py-1.5 rounded-lg text-xs font-medium">
+            Done
+        </div>`;
+    }
+    
     if (!dueDate) return '';
     
     const now = new Date();
@@ -580,11 +587,11 @@ function getDueDateBadge(dueDate) {
     const diffMs = due - now;
     const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
     
-    // Past due date - red
+    // Past due date - red, shows "X days overdue"
     if (diffDays < 0) {
         const absDays = Math.abs(diffDays);
         return `<div class="dueDateBadge inline-flex items-center gap-1 bg-red-100 text-red-700 px-2.5 py-1.5 rounded-lg text-xs font-medium">
-            ${absDays} day${absDays > 1 ? 's' : ''} left
+            ${absDays} day${absDays > 1 ? 's' : ''} overdue
         </div>`;
     }
     
@@ -1466,7 +1473,7 @@ function initKanban() {
 
 <!-- FOOTER - Version Info -->
 <footer class="max-w-7xl mx-auto px-6 py-4 text-right">
-    <span class="text-sm text-gray-400 font-sans" id="versionFooter">v1.0.44 (10.03.2026 - 12:30)</span>
+    <span class="text-sm text-gray-400 font-sans" id="versionFooter">v1.0.45 (10.03.2026 - 13:00)</span>
 </footer>
 
 </body>

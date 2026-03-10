@@ -1,5 +1,10 @@
 # Version History
 
+## v1.0.45 (10.03.2026 - 13:00)
+- Fixed overdue cards: now shows "X days overdue" instead of "X days left"
+- Cards in "Done" column always show green "Done" badge
+- Due date badge function now takes column_status parameter
+
 ## v1.0.44 (10.03.2026 - 12:30)
 - Due date badge aligned with members on same line (bottom of card)
 - New color coding: <7 days = red, 7-14 days = orange, 14-30 days = gray, >30 days = date (gray)
