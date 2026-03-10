@@ -1,5 +1,10 @@
 # Version History
 
+## v1.0.59 (10.03.2026 - 19:30)
+- Fixed datepicker scrolling issue by changing modal scroll behavior
+- Modal now scrolls as part of page overlay (not internal scrolling)
+- Datepicker now stays aligned with input field when scrolling
+
 ## v1.0.58 (10.03.2026 - 19:00)
 - Fixed datepicker scrolling with page instead of modal
 - Datepicker popup now appended to modal container (`container: modal`)

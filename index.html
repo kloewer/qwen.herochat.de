@@ -166,9 +166,9 @@ MODAL
 ===================================================== -->
 
 <div id="taskModal"
-     class="hidden fixed inset-0 bg-black/40 flex items-center justify-center p-4 overflow-y-auto z-50">
+     class="hidden fixed inset-0 bg-black/40 flex items-start justify-center pt-20 pb-20 z-50 overflow-y-auto">
 
-    <div class="bg-white rounded-lg shadow-2xl w-full max-w-4xl overflow-hidden">
+    <div class="bg-white rounded-lg shadow-2xl w-full max-w-4xl overflow-hidden mb-8">
 
         <!-- HEADER -->
         <div class="flex items-center justify-between px-4 py-3 border-b">
@@ -729,15 +729,11 @@ function initModal() {
             }
         });
         
-        // Configure datepicker to append to modal container
-        const modal = document.getElementById('taskModal');
-        if (modal) {
-            const datepickerInstance = new Datepicker(datepickerInput, {
-                autohide: true,
-                container: modal,
-                placement: 'bottom',
-            });
-        }
+        // Configure datepicker
+        const datepickerInstance = new Datepicker(datepickerInput, {
+            autohide: true,
+            placement: 'bottom',
+        });
     }
 
     // Expandable comment input
@@ -1601,7 +1597,7 @@ function initKanban() {
 
 <!-- FOOTER - Version Info -->
 <footer class="max-w-7xl mx-auto px-6 py-4 text-right">
-    <span class="text-sm text-gray-400 font-sans" id="versionFooter">v1.0.58 (10.03.2026 - 19:00)</span>
+    <span class="text-sm text-gray-400 font-sans" id="versionFooter">v1.0.59 (10.03.2026 - 19:30)</span>
 </footer>
 
 </body>
